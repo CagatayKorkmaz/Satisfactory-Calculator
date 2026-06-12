@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useMemo } from 'react';
+import { useCallback, useRef, useState, useMemo, useEffect } from 'react';
 import {
   ReactFlow,
   Background,
@@ -16,6 +16,7 @@ import ProductionRootNode from '../nodes/ProductionRootNode';
 import IngredientNode from '../nodes/IngredientNode';
 import RawNode from '../nodes/RawNode';
 import AddProductionModal from '../modals/AddProductionModal';
+import EditProductionModal from '../modals/EditProductionModal';
 
 import { buildProductionTree, generateTreeId } from '../../engine/recipeEngine';
 import { applyOverrides } from '../../engine/overrideEngine';
@@ -35,10 +36,20 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
+  const [nodeContextMenu, setNodeContextMenu] = useState(null);
+  const [editModal, setEditModal] = useState(null);
+  const [isBulkMode, setIsBulkMode] = useState(false);
   const [activeFocus, setActiveFocus] = useState(null);
 
   const overridesRef = useRef({});
   const rfInstanceRef = useRef(null);
+
+  useEffect(() => {
+    if (!isBulkMode) return;
+    const handler = (e) => { if (e.key === 'Escape') setIsBulkMode(false); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [isBulkMode]);
 
   const onConnect = useCallback((params) => {
     setEdges(eds => addEdge({ ...params, type: 'smoothstep', animated: false }, eds));
@@ -178,10 +189,16 @@ export default function SatisfactoryCanvas({ recipesData }) {
 
   const handlePaneContextMenu = useCallback((event) => {
     event.preventDefault();
+    setNodeContextMenu(null);
     setContextMenu({ x: event.clientX, y: event.clientY });
   }, []);
 
   const closeContextMenu = useCallback(() => setContextMenu(null), []);
+
+  const toggleBulkMode = useCallback(() => {
+    setIsBulkMode(prev => !prev);
+    setContextMenu(null);
+  }, []);
 
   const handleClearCanvas = useCallback(() => {
     if (window.confirm('T\u00fcm canvas temizlensin mi?')) {
@@ -206,6 +223,87 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const handlePaneClick = useCallback(() => {
     setActiveFocus(null);
   }, []);
+
+  const handleNodeContextMenu = useCallback((event, node) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (node.type === 'textNode') return;
+    setContextMenu(null);
+    setNodeContextMenu({
+      x: event.clientX,
+      y: event.clientY,
+      nodeId: node.id,
+      nodeType: node.type,
+      itemName: node.data?.itemName,
+      standardAmount: node.data?.standardAmount,
+      requiredAmount: node.data?.requiredAmount,
+    });
+  }, []);
+
+  const closeNodeContextMenu = useCallback(() => setNodeContextMenu(null), []);
+
+  const rebuildTree = useCallback((prefix, newItem, newTargetAmount, preservedOverrides) => {
+    const { nodes: treeNodes, edges: treeEdges } = buildProductionTree(
+      newItem,
+      newTargetAmount,
+      recipes,
+      itemsMap,
+      { nodeIdPrefix: prefix }
+    );
+
+    const laidOutNodes = applyLayout(treeNodes, treeEdges);
+    const routedEdges = assignClosestHandles(laidOutNodes, treeEdges);
+
+    const nodesWithOverrides = applyOverrides(laidOutNodes, routedEdges, preservedOverrides || {});
+
+    const withCallbacks = nodesWithOverrides.nodes.map(n => ({
+      ...n,
+      data: {
+        ...n.data,
+        onOverrideChange: handleOverrideChangeRef.current,
+        onDelete: handleDeleteNodeRef.current,
+      },
+    }));
+
+    setNodes(prev => [...prev.filter(n => !n.id.startsWith(prefix)), ...withCallbacks]);
+    setEdges(prev => [
+      ...prev.filter(e => !e.source.startsWith(prefix) && !e.target.startsWith(prefix)),
+      ...nodesWithOverrides.edges,
+    ]);
+  }, [recipes, itemsMap, setNodes, setEdges]);
+
+  const handleEditConfirm = useCallback(({ item, targetAmount }) => {
+    if (!editModal) return;
+    const { nodeId } = editModal;
+    const parts = nodeId.split('_');
+    const prefix = parts.slice(0, 2).join('_');
+
+    const preservedOverrides = { ...(overridesRef.current[prefix] || {}) };
+    overridesRef.current[prefix] = preservedOverrides;
+
+    rebuildTree(prefix, item, targetAmount, preservedOverrides);
+    setEditModal(null);
+  }, [editModal, rebuildTree]);
+
+  const handleScaleConfirm = useCallback(({ newCapacity }) => {
+    if (!editModal) return;
+    const { nodeId, itemName, requiredAmount } = editModal;
+    const parts = nodeId.split('_');
+    const prefix = parts.slice(0, 2).join('_');
+
+    const rootNode = nodes.find(n => n.id.startsWith(prefix) && n.type === 'productionRootNode');
+    if (!rootNode) { setEditModal(null); return; }
+
+    const currentRootTarget = rootNode.data?.standardAmount || 1;
+    const multiplier = newCapacity / (requiredAmount || 1);
+    const newRootTarget = currentRootTarget * multiplier;
+
+    const preservedOverrides = { ...(overridesRef.current[prefix] || {}) };
+    overridesRef.current[prefix] = preservedOverrides;
+
+    rebuildTree(prefix, rootNode.data?.itemName || itemName, newRootTarget, preservedOverrides);
+    setEditModal(null);
+  }, [editModal, nodes, rebuildTree]);
 
   const connectedElements = useMemo(() => {
     if (!activeFocus) return null;
@@ -294,7 +392,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
   }, [edges, dimmedEdges, connectedElements]);
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }} onClick={closeContextMenu}>
+    <div style={{ width: '100vw', height: '100vh' }} onClick={() => { closeContextMenu(); closeNodeContextMenu(); }}>
       <ReactFlow
         nodes={nodesWithDim}
         edges={edgesWithDim}
@@ -304,6 +402,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
         onInit={instance => { rfInstanceRef.current = instance; }}
         nodeTypes={nodeTypes}
         onPaneContextMenu={handlePaneContextMenu}
+        onNodeContextMenu={handleNodeContextMenu}
         onNodeClick={handleNodeClick}
         onEdgeClick={handleEdgeClick}
         onPaneClick={handlePaneClick}
@@ -314,6 +413,10 @@ export default function SatisfactoryCanvas({ recipesData }) {
         proOptions={{ hideAttribution: true }}
         deleteKeyCode={['Backspace', 'Delete']}
         defaultEdgeOptions={{ type: 'smoothstep' }}
+        selectionOnDrag={isBulkMode}
+        panOnDrag={!isBulkMode}
+        selectionMode={isBulkMode ? 'partial' : undefined}
+        multiSelectionKeyCode="Shift"
       >
         <Background
           variant={BackgroundVariant.Dots}
@@ -356,6 +459,79 @@ export default function SatisfactoryCanvas({ recipesData }) {
             <span className="icon">📝</span>
             Not Ekle
           </div>
+          <div className="context-menu-divider" />
+          <div
+            className={`context-menu-item ${isBulkMode ? 'active' : ''}`}
+            id="ctx-bulk-select"
+            onClick={toggleBulkMode}
+          >
+            <span className="icon">🔲</span>
+            {isBulkMode ? 'Toplu Seçim Modunu Kapat' : 'Toplu Seçim Modunu Aç'}
+          </div>
+        </div>
+      )}
+
+      {nodeContextMenu && (
+        <div
+          className="context-menu"
+          style={{ left: nodeContextMenu.x, top: nodeContextMenu.y }}
+          onClick={e => e.stopPropagation()}
+        >
+          {(nodeContextMenu.nodeType === 'ingredientNode' || nodeContextMenu.nodeType === 'rawNode') && (
+            <div
+              className="context-menu-item"
+              id="ctx-scale-capacity"
+              onClick={() => {
+                closeNodeContextMenu();
+                setEditModal({
+                  mode: 'scaleToCapacity',
+                  nodeId: nodeContextMenu.nodeId,
+                  itemName: nodeContextMenu.itemName,
+                  requiredAmount: nodeContextMenu.requiredAmount,
+                  currentNodeLabel: `${nodeContextMenu.itemName} (${nodeContextMenu.requiredAmount?.toFixed(2)}/dk)`,
+                });
+              }}
+            >
+              <span className="icon">📐</span>
+              Kapasiteye Göre Ölçekle
+            </div>
+          )}
+          {nodeContextMenu.nodeType === 'productionRootNode' && (
+            <div
+              className="context-menu-item"
+              id="ctx-change-item"
+              onClick={() => {
+                closeNodeContextMenu();
+                setEditModal({
+                  mode: 'changeItem',
+                  nodeId: nodeContextMenu.nodeId,
+                  currentItem: nodeContextMenu.itemName,
+                  currentTargetAmount: nodeContextMenu.standardAmount,
+                });
+              }}
+            >
+              <span className="icon">🔄</span>
+              Ürünü Değiştir
+            </div>
+          )}
+          {nodeContextMenu.nodeType === 'productionRootNode' && (
+            <div
+              className="context-menu-item"
+              id="ctx-change-target"
+              onClick={() => {
+                closeNodeContextMenu();
+                setEditModal({
+                  mode: 'changeTarget',
+                  nodeId: nodeContextMenu.nodeId,
+                  currentItem: nodeContextMenu.itemName,
+                  currentTargetAmount: nodeContextMenu.standardAmount,
+                });
+              }}
+            >
+              <span className="icon">🎯</span>
+              Hedef Üretimi Değiştir
+            </div>
+          )}
         </div>
       )}
 
@@ -365,6 +541,19 @@ export default function SatisfactoryCanvas({ recipesData }) {
           itemsMap={itemsMap}
           onConfirm={handleAddProduction}
           onClose={() => setShowAddModal(false)}
+        />
+      )}
+
+      {editModal && (
+        <EditProductionModal
+          recipes={recipes}
+          itemsMap={itemsMap}
+          mode={editModal.mode}
+          currentItem={editModal.currentItem}
+          currentTargetAmount={editModal.currentTargetAmount}
+          currentNodeLabel={editModal.currentNodeLabel}
+          onConfirm={editModal.mode === 'scaleToCapacity' ? handleScaleConfirm : handleEditConfirm}
+          onClose={() => setEditModal(null)}
         />
       )}
 
@@ -395,6 +584,15 @@ export default function SatisfactoryCanvas({ recipesData }) {
           onClick={handleAddTextNode}
         >
           📝 Not Ekle
+        </button>
+        <div className="toolbar-divider" />
+        <button
+          id="btn-bulk-mode"
+          className={`toolbar-btn ${isBulkMode ? 'active' : ''}`}
+          onClick={toggleBulkMode}
+          style={isBulkMode ? { color: 'var(--color-primary)', background: 'var(--color-surface-3)' } : {}}
+        >
+          🔲 {isBulkMode ? 'Toplu Seçim Aktif' : 'Toplu Seçim'}
         </button>
         <div className="toolbar-divider" />
         <button

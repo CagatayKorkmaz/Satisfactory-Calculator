@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
 const IngredientNode = memo(({ id, data, selected }) => {
@@ -11,7 +11,6 @@ const IngredientNode = memo(({ id, data, selected }) => {
     underclockPercent,
     requiredAmount,
     standardAmount,
-    userOverride,
     satisfied,
     overflowing,
     onOverrideChange,
@@ -22,18 +21,14 @@ const IngredientNode = memo(({ id, data, selected }) => {
 
   const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
 
-  const [inputValue, setInputValue] = useState(
-    userOverride !== null && userOverride !== undefined ? String(userOverride) : ''
-  );
-
-  const handleOverrideChange = useCallback((e) => {
-    const val = e.target.value;
-    setInputValue(val);
-    const numVal = val === '' ? null : Number(val);
-    if (onOverrideChange) {
-      onOverrideChange(id, itemName, numVal);
+  const handleToggleEstablished = useCallback(() => {
+    if (!onOverrideChange) return;
+    if (satisfied) {
+      onOverrideChange(id, itemName, null);
+    } else {
+      onOverrideChange(id, itemName, standardAmount);
     }
-  }, [id, itemName, onOverrideChange]);
+  }, [id, itemName, standardAmount, satisfied, onOverrideChange]);
 
   const getStatusColor = () => {
     if (overflowing) return 'var(--color-accent)';
@@ -98,36 +93,12 @@ const IngredientNode = memo(({ id, data, selected }) => {
           </span>
         </div>
 
-        {userOverride !== null && userOverride !== undefined && (
-          <div className="node-amount-row">
-            <span className="node-amount-label">Kalan İhtiyaç</span>
-            <span
-              className={`node-amount-value ${requiredAmount === 0 ? 'zero' : ''}`}
-              style={{ color: getStatusColor() }}
-            >
-              {requiredAmount != null && requiredAmount % 1 === 0 ? requiredAmount.toString() : requiredAmount?.toFixed(2)}/dk
-            </span>
-          </div>
-        )}
-
-        <div style={{ marginTop: 8 }}>
-          <div className="node-override-label">Elimdeki Miktar (/dk)</div>
-          <input
-            className="override-input nodrag"
-            type="number"
-            min="0"
-            step="0.5"
-            placeholder="0"
-            value={inputValue}
-            onChange={handleOverrideChange}
-            style={{
-              borderColor: satisfied
-                ? 'var(--color-success)'
-                : overflowing
-                ? 'var(--color-accent)'
-                : undefined,
-            }}
-          />
+        <div
+          className={`node-established-toggle ${satisfied ? 'active' : ''}`}
+          onClick={handleToggleEstablished}
+        >
+          <span className="checkmark-icon">{satisfied ? '✅' : '⬜'}</span>
+          <span className="established-label">Üretim Kuruldu</span>
         </div>
       </div>
 

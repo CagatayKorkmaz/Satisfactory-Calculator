@@ -588,6 +588,26 @@ html, body, #root {
   text-align: center;
 }
 
+.context-menu-item.active {
+  color: var(--color-primary);
+  background: var(--color-surface-3);
+}
+
+.context-menu-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 4px 8px;
+}
+
+/* ============================================================
+   ReactFlow Selection Marquee (Bulk Mode)
+   ============================================================ */
+.react-flow__selection {
+  background: rgba(240, 165, 0, 0.08) !important;
+  border: 1.5px dashed var(--color-primary) !important;
+  border-radius: 4px;
+}
+
 /* ============================================================
    Search Input in Modal
    ============================================================ */
@@ -720,6 +740,43 @@ html, body, #root {
 }
 
 .node-amount-value.zero {
+  color: var(--color-success);
+}
+
+.node-established-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.node-established-toggle:hover {
+  background: var(--color-surface-3);
+}
+
+.node-established-toggle.active {
+  background: var(--color-success-glow);
+}
+
+.checkmark-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.established-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.node-established-toggle.active .established-label {
   color: var(--color-success);
 }
 

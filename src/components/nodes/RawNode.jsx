@@ -6,16 +6,20 @@ const RawNode = memo(({ id, data, selected }) => {
     itemName,
     icon,
     requiredAmount,
+    standardAmount,
     satisfied,
     overflowing,
     onOverrideChange,
     outputCount,
   } = data;
 
-  const handleOverrideChange = (e) => {
-    const val = e.target.value;
-    const numVal = val === '' ? null : Number(val);
-    if (onOverrideChange) onOverrideChange(id, itemName, numVal);
+  const handleToggleEstablished = () => {
+    if (!onOverrideChange) return;
+    if (satisfied) {
+      onOverrideChange(id, itemName, null);
+    } else {
+      onOverrideChange(id, itemName, standardAmount);
+    }
   };
 
   const getStatusColor = () => {
@@ -64,22 +68,12 @@ const RawNode = memo(({ id, data, selected }) => {
           </span>
         </div>
 
-        <div style={{ marginTop: 8 }}>
-          <div className="node-override-label">Elimdeki Miktar (/dk)</div>
-          <input
-            className="override-input nodrag"
-            type="number"
-            min="0"
-            step="1"
-            placeholder="0"
-            defaultValue={data.userOverride ?? ''}
-            onChange={handleOverrideChange}
-            style={{
-              borderColor: satisfied ? 'var(--color-success)'
-                : overflowing ? 'var(--color-accent)'
-                : 'var(--color-warning)',
-            }}
-          />
+        <div
+          className={`node-established-toggle ${satisfied ? 'active' : ''}`}
+          onClick={handleToggleEstablished}
+        >
+          <span className="checkmark-icon">{satisfied ? '✅' : '⬜'}</span>
+          <span className="established-label">Üretim Kuruldu</span>
         </div>
       </div>
 
