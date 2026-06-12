@@ -13,9 +13,15 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
     standardAmount,
     onDelete,
     inputCount,
+    byproducts = [],
   } = data;
 
   const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
+  const hasByproducts = byproducts.length > 0;
+
+  const formatAmount = (value) => (
+    value != null && value % 1 === 0 ? value.toString() : value?.toFixed(2)
+  );
 
   return (
     <div
@@ -73,7 +79,7 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
         <div className="node-amount-row">
           <span className="node-amount-label">Hedef Üretim</span>
           <span className="node-amount-value">
-            {standardAmount != null && standardAmount % 1 === 0 ? standardAmount.toString() : standardAmount?.toFixed(2)}/dk
+            {formatAmount(standardAmount)}/dk
           </span>
         </div>
         {requiredAmount !== standardAmount && (
@@ -83,11 +89,41 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
               className="node-amount-value"
               style={{ color: requiredAmount === 0 ? 'var(--color-success)' : 'var(--color-error)' }}
             >
-              {requiredAmount != null && requiredAmount % 1 === 0 ? requiredAmount.toString() : requiredAmount?.toFixed(2)}/dk
+              {formatAmount(requiredAmount)}/dk
             </span>
           </div>
         )}
+        {hasByproducts && (
+          <div className="node-byproducts">
+            <div className="node-byproducts-title">Yan Ürün</div>
+            {byproducts.map(byproduct => (
+              <div className="node-byproduct-row" key={byproduct.item}>
+                {byproduct.icon?.startsWith?.('/')
+                  ? <img className="node-byproduct-icon" src={byproduct.icon} alt={byproduct.item} />
+                  : <span className="node-byproduct-icon">{byproduct.icon}</span>}
+                <span className="node-byproduct-text">
+                  Üretilen Yan Ürün: {formatAmount(byproduct.amount)}/dk {byproduct.item}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {hasByproducts && byproducts.map((byproduct, i) => {
+        const count = byproducts.length;
+        const left = count === 1 ? '88%' : `${70 + (i / (count - 1)) * 20}%`;
+        return (
+          <Handle
+            key={`byproduct-source-${i}`}
+            type="source"
+            position={Position.Bottom}
+            id={`byproduct-source-${i}`}
+            title={byproduct.item}
+            style={{ background: '#c084fc', left, bottom: -6 }}
+          />
+        );
+      })}
 
       {Array.from({ length: inputCount || 1 }, (_, i) => {
         const count = Math.max(1, inputCount);

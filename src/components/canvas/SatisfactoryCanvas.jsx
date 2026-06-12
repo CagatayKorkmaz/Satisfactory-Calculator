@@ -152,7 +152,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
     setNodes(prev => [...prev, newNode]);
   }, [handleTextNodeChange, setNodes]);
 
-  const handleAddProduction = useCallback(({ item, targetAmount }) => {
+  const handleAddProduction = useCallback(async ({ item, targetAmount }) => {
     const treeId = generateTreeId();
     const viewport = rfInstanceRef.current?.getViewport() || { x: 0, y: 0, zoom: 1 };
 
@@ -167,7 +167,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
       { nodeIdPrefix: treeId }
     );
 
-    const laidOutNodes = applyLayout(treeNodes, treeEdges, {
+    const laidOutNodes = await applyLayout(treeNodes, treeEdges, {
       offsetX: centerX,
       offsetY: centerY,
     });

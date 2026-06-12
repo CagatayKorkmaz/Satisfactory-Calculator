@@ -11,11 +11,55 @@ function getEdgeColor(category) {
 }
 
 export function findRecipe(itemName, recipes) {
-  return recipes.find(r => r.item === itemName) || null;
+  return recipes.find(r => getRecipeItem(r) === itemName) || null;
+}
+
+function getRecipeItem(recipe) {
+  if (recipe.item) return recipe.item;
+  return recipe.products?.[0]?.item || null;
+}
+
+function getOutputAmount(output) {
+  return output?.amount_per_min ?? output?.output_per_min ?? output?.amount ?? 0;
+}
+
+function getRecipeOutputRate(recipe) {
+  if (recipe.output_per_min) return recipe.output_per_min;
+
+  const recipeItem = getRecipeItem(recipe);
+  const primaryProduct = recipe.products?.find(product => product.item === recipeItem);
+  return getOutputAmount(primaryProduct);
+}
+
+function getRecipeByproducts(recipe, scaleFactor, itemsMap) {
+  const recipeItem = getRecipeItem(recipe);
+  const byproductMap = new Map();
+  const outputs = [
+    ...(recipe.products || []).filter(product => product.item !== recipeItem),
+    ...(recipe.byproducts || []),
+  ];
+
+  outputs.forEach(output => {
+    if (!output.item) return;
+    const amount = getOutputAmount(output) * scaleFactor;
+    const current = byproductMap.get(output.item) || 0;
+    byproductMap.set(output.item, current + amount);
+  });
+
+  return Array.from(byproductMap, ([item, amount]) => {
+    const itemMeta = itemsMap[item] || { icon: '\uD83D\uDCE6', category: 'unknown' };
+    return {
+      item,
+      amount,
+      baseRate: amount / scaleFactor,
+      icon: itemMeta.icon,
+      category: itemMeta.category || 'unknown',
+    };
+  });
 }
 
 export function getScaleFactor(recipe, targetAmount) {
-  return targetAmount / recipe.output_per_min;
+  return targetAmount / getRecipeOutputRate(recipe);
 }
 
 function accumulateAmounts(item, amount, recipes, pathVisited, amounts) {
@@ -29,7 +73,7 @@ function accumulateAmounts(item, amount, recipes, pathVisited, amounts) {
   if (!recipe) return;
 
   const scaleFactor = getScaleFactor(recipe, amount);
-  recipe.ingredients.forEach(ing => {
+  (recipe.ingredients || []).forEach(ing => {
     accumulateAmounts(ing.item, ing.amount_per_min * scaleFactor, recipes, pathVisited, amounts);
   });
 }
@@ -75,8 +119,9 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
         machineCount: totalMachineCount,
         fullMachines: totalFullMachines,
         underclockPercent,
-        baseRate: recipe?.output_per_min || 0,
+        baseRate: recipe ? getRecipeOutputRate(recipe) : 0,
         scaleFactor: totalScaleFactor,
+        byproducts: recipe ? getRecipeByproducts(recipe, totalScaleFactor, itemsMap) : [],
         isRawResource,
         userOverride: null,
         satisfied: false,
@@ -91,7 +136,7 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
 
     if (!isRawResource && recipe) {
       const sf = getScaleFactor(recipe, totalAmount);
-      recipe.ingredients.forEach(ing => {
+      (recipe.ingredients || []).forEach(ing => {
         buildGraph(ing.item, ing.amount_per_min * sf, nodeId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx);
       });
     }

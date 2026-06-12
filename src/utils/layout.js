@@ -1,4 +1,4 @@
-import dagre from 'dagre';
+import ELK from 'elkjs/lib/elk.bundled.js';
 
 const NODE_DIMENSIONS = {
   productionRootNode: { width: 240, height: 150 },
@@ -8,8 +8,21 @@ const NODE_DIMENSIONS = {
 };
 
 const DEFAULT_DIMENSIONS = { width: 200, height: 120 };
+const elk = new ELK();
 
-export function applyLayout(nodes, edges, options = {}) {
+function getNodeDimensions(node) {
+  const base = NODE_DIMENSIONS[node.type] || DEFAULT_DIMENSIONS;
+  const byproductCount = node.data?.byproducts?.length || 0;
+
+  if (byproductCount === 0) return base;
+
+  return {
+    ...base,
+    height: base.height + 34 + Math.max(0, byproductCount - 1) * 28,
+  };
+}
+
+export async function applyLayout(nodes, edges, options = {}) {
   const {
     direction = 'TB',
     nodeSpacing = 80,
@@ -18,50 +31,54 @@ export function applyLayout(nodes, edges, options = {}) {
     offsetY = 0,
   } = options;
 
-  const g = new dagre.graphlib.Graph();
-  g.setGraph({
-    rankdir: direction,
-    nodesep: nodeSpacing,
-    ranksep: rankSpacing,
-    marginx: 40,
-    marginy: 40,
-  });
-  g.setDefaultEdgeLabel(() => ({}));
+  const elkDirection = direction === 'TB' ? 'UP' : direction;
+  const graph = {
+    id: 'root',
+    layoutOptions: {
+      'elk.algorithm': 'layered',
+      'elk.direction': elkDirection,
+      'elk.spacing.nodeNode': `${nodeSpacing}`,
+      'elk.layered.spacing.nodeNodeBetweenLayers': `${rankSpacing}`,
+      'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
+      'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
+      'elk.layered.considerModelOrder.strategy': 'NONE',
+      'elk.padding': '[top=40,left=40,bottom=40,right=40]',
+    },
+    children: nodes.map(node => ({
+      id: node.id,
+      ...getNodeDimensions(node),
+    })),
+    edges: edges.map(edge => ({
+      id: edge.id,
+      sources: [edge.source],
+      targets: [edge.target],
+    })),
+  };
 
-  nodes.forEach(node => {
-    const dims = NODE_DIMENSIONS[node.type] || DEFAULT_DIMENSIONS;
-    g.setNode(node.id, { width: dims.width, height: dims.height });
-  });
-
-  edges.forEach(edge => {
-    g.setEdge(edge.target, edge.source);
-  });
-
-  dagre.layout(g);
+  const layoutedGraph = await elk.layout(graph);
+  const layoutedNodeMap = new Map((layoutedGraph.children || []).map(node => [node.id, node]));
 
   const rootNode = nodes.find(n => n.type === 'productionRootNode');
 
   let rootDx = 0;
   let rootDy = 0;
   if (rootNode) {
-    const rootPos = g.node(rootNode.id);
+    const rootPos = layoutedNodeMap.get(rootNode.id);
     if (rootPos) {
-      const rootDims = NODE_DIMENSIONS[rootNode.type] || DEFAULT_DIMENSIONS;
-      rootDx = offsetX - (rootPos.x - rootDims.width / 2);
-      rootDy = offsetY - (rootPos.y - rootDims.height / 2);
+      rootDx = offsetX - rootPos.x;
+      rootDy = offsetY - rootPos.y;
     }
   }
 
   return nodes.map(node => {
-    const dagreNode = g.node(node.id);
-    if (!dagreNode) return node;
+    const elkNode = layoutedNodeMap.get(node.id);
+    if (!elkNode) return node;
 
-    const dims = NODE_DIMENSIONS[node.type] || DEFAULT_DIMENSIONS;
     return {
       ...node,
       position: {
-        x: dagreNode.x - dims.width / 2 + rootDx,
-        y: dagreNode.y - dims.height / 2 + rootDy,
+        x: elkNode.x + rootDx,
+        y: elkNode.y + rootDy,
       },
     };
   });
@@ -81,8 +98,8 @@ export function assignClosestHandles(nodes, edges) {
     const targetNode = nodeMap.get(edge.target);
     if (!sourceNode || !targetNode) return edge;
 
-    const sourceDims = NODE_DIMENSIONS[sourceNode.type] || DEFAULT_DIMENSIONS;
-    const targetDims = NODE_DIMENSIONS[targetNode.type] || DEFAULT_DIMENSIONS;
+    const sourceDims = getNodeDimensions(sourceNode);
+    const targetDims = getNodeDimensions(targetNode);
 
     const sx = sourceNode.position.x;
     const tx = targetNode.position.x;
