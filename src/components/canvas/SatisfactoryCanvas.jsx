@@ -98,6 +98,40 @@ export default function SatisfactoryCanvas({ recipesData }) {
           !e.source.startsWith(prefix) && !e.target.startsWith(prefix)
         );
 
+        // Cascade established: ancak çocuğun TÜM ebeveynleri checkliyse çocuğu da checkle
+        if (value !== null && value !== undefined) {
+          const alreadySatisfied = new Set(
+            treeNodes.filter(n => n.data?.satisfied).map(n => n.id)
+          );
+          const toEstablish = new Set([nodeId]);
+          const queue = [nodeId];
+          while (queue.length > 0) {
+            const current = queue.pop();
+            treeEdges.forEach(e => {
+              if (e.target === current) {
+                const childId = e.source;
+                if (toEstablish.has(childId)) return;
+                const allParentsOk = treeEdges
+                  .filter(edge => edge.source === childId)
+                  .every(edge =>
+                    alreadySatisfied.has(edge.target) || toEstablish.has(edge.target)
+                  );
+                if (allParentsOk) {
+                  toEstablish.add(childId);
+                  queue.push(childId);
+                }
+              }
+            });
+          }
+          toEstablish.forEach(id => {
+            const node = treeNodes.find(n => n.id === id);
+            if (node?.data?.standardAmount) {
+              treeOverrides[node.data.itemName] = node.data.standardAmount;
+            }
+          });
+          overridesRef.current[prefix] = treeOverrides;
+        }
+
         const { nodes: updatedNodes, edges: updatedEdges } =
           applyOverrides(treeNodes, treeEdges, treeOverrides);
 
@@ -393,11 +427,38 @@ export default function SatisfactoryCanvas({ recipesData }) {
     });
   }, [edges, dimmedEdges, connectedElements]);
 
+  // Establishend (satisfied) nodları saydamlaştır
+  const nodesWithEstablishedDim = useMemo(() => {
+    return nodesWithDim.map(n => {
+      if (dimmedNodes?.[n.id]) return n;
+      if (n.data?.satisfied) {
+        return { ...n, style: { ...n.style, opacity: 0.35 } };
+      }
+      return n;
+    });
+  }, [nodesWithDim, dimmedNodes]);
+
+  const edgesWithEstablishedDim = useMemo(() => {
+    return edgesWithDim.map(e => {
+      if (dimmedEdges?.[e.id]) return e;
+      const sourceNode = nodes.find(n => n.id === e.source);
+      if (sourceNode?.data?.satisfied) {
+        const baseStyle = e.style || {};
+        return {
+          ...e,
+          style: { ...baseStyle, opacity: 0.15 },
+          labelStyle: { ...e.labelStyle, opacity: 0.15 },
+        };
+      }
+      return e;
+    });
+  }, [edgesWithDim, dimmedEdges, nodes]);
+
   return (
     <div style={{ width: '100vw', height: '100vh' }} onClick={() => { closeContextMenu(); closeNodeContextMenu(); }}>
       <ReactFlow
-        nodes={nodesWithDim}
-        edges={edgesWithDim}
+        nodes={nodesWithEstablishedDim}
+        edges={edgesWithEstablishedDim}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}

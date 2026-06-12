@@ -13,7 +13,8 @@ const RawNode = memo(({ id, data, selected }) => {
     outputCount,
   } = data;
 
-  const handleToggleEstablished = () => {
+  const handleToggleEstablished = (e) => {
+    e.stopPropagation();
     if (!onOverrideChange) return;
     if (satisfied) {
       onOverrideChange(id, itemName, null);
@@ -35,7 +36,6 @@ const RawNode = memo(({ id, data, selected }) => {
         minWidth: 180,
         position: 'relative',
         borderLeft: `3px solid ${getStatusColor()}`,
-        opacity: satisfied ? 0.7 : 1,
       }}
     >
       <div

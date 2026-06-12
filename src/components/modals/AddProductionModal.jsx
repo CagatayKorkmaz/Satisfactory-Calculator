@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 
 /**
  * AddProductionModal — Üretim hattı ekleme modalı.
@@ -8,6 +8,7 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
   const [search, setSearch] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
   const [targetAmount, setTargetAmount] = useState(1);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   // Sadece tarifi olan ürünleri göster (ham kaynaklar hariç)
   const filteredRecipes = useMemo(() => {
@@ -17,18 +18,69 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
     );
   }, [recipes, search]);
 
-  // ESC ile kapat
+  // Arama sonuçları değişince ilk sonucu pre-select yap
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [onClose]);
+    if (filteredRecipes.length > 0) {
+      setHighlightedIndex(0);
+      setSelectedItem(filteredRecipes[0]);
+    } else {
+      setHighlightedIndex(-1);
+      setSelectedItem(null);
+    }
+  }, [filteredRecipes]);
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     if (!selectedItem) return;
     onConfirm({ item: selectedItem.item, targetAmount: Number(targetAmount) });
     onClose();
-  };
+  }, [selectedItem, targetAmount, onConfirm, onClose]);
+
+  // ESC, ok tuşları ve Enter ile navigation
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setHighlightedIndex(prev => {
+          if (filteredRecipes.length === 0) return prev;
+          const next = Math.min(prev + 1, filteredRecipes.length - 1);
+          setSelectedItem(filteredRecipes[next]);
+          return next;
+        });
+        return;
+      }
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setHighlightedIndex(prev => {
+          if (filteredRecipes.length === 0) return prev;
+          const next = Math.max(prev - 1, 0);
+          setSelectedItem(filteredRecipes[next]);
+          return next;
+        });
+        return;
+      }
+
+      if (e.key === 'Enter' && selectedItem) {
+        e.preventDefault();
+        handleConfirm();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose, filteredRecipes, selectedItem, handleConfirm]);
+
+  // Seçili öğeyi görünüme kaydır
+  useEffect(() => {
+    if (highlightedIndex >= 0 && filteredRecipes[highlightedIndex]) {
+      const el = document.getElementById(`item-${filteredRecipes[highlightedIndex].id}`);
+      if (el) el.scrollIntoView({ block: 'nearest' });
+    }
+  }, [highlightedIndex, filteredRecipes]);
 
   const selectedMeta = selectedItem ? (itemsMap[selectedItem.item] || {}) : null;
 
@@ -78,7 +130,7 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
               <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: 13 }}>
                 Ürün bulunamadı
               </div>
-            ) : filteredRecipes.map(recipe => {
+            ) : filteredRecipes.map((recipe, index) => {
               const meta = itemsMap[recipe.item] || { icon: '📦', category: '' };
               const isSelected = selectedItem?.item === recipe.item;
               return (
@@ -86,7 +138,10 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
                   key={recipe.id}
                   id={`item-${recipe.id}`}
                   className={`item-list-item ${isSelected ? 'selected' : ''}`}
-                  onClick={() => setSelectedItem(recipe)}
+                  onClick={() => {
+                    setSelectedItem(recipe);
+                    setHighlightedIndex(index);
+                  }}
                 >
                   {meta.icon.startsWith('/')
                   ? <img className="item-icon" src={meta.icon} alt={recipe.item} />

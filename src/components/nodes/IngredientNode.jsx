@@ -27,7 +27,8 @@ const IngredientNode = memo(({ id, data, selected }) => {
     value != null && value % 1 === 0 ? value.toString() : value?.toFixed(2)
   );
 
-  const handleToggleEstablished = useCallback(() => {
+  const handleToggleEstablished = useCallback((e) => {
+    e.stopPropagation();
     if (!onOverrideChange) return;
     if (satisfied) {
       onOverrideChange(id, itemName, null);
