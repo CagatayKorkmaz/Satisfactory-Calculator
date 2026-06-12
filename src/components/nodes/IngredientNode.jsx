@@ -94,7 +94,7 @@ const IngredientNode = memo(({ id, data, selected }) => {
         <div className="node-amount-row">
           <span className="node-amount-label">Standart İhtiyaç</span>
           <span className="node-amount-value">
-            {standardAmount?.toFixed(2)}/dk
+            {standardAmount != null && standardAmount % 1 === 0 ? standardAmount.toString() : standardAmount?.toFixed(2)}/dk
           </span>
         </div>
 
@@ -105,7 +105,7 @@ const IngredientNode = memo(({ id, data, selected }) => {
               className={`node-amount-value ${requiredAmount === 0 ? 'zero' : ''}`}
               style={{ color: getStatusColor() }}
             >
-              {requiredAmount?.toFixed(2)}/dk
+              {requiredAmount != null && requiredAmount % 1 === 0 ? requiredAmount.toString() : requiredAmount?.toFixed(2)}/dk
             </span>
           </div>
         )}

@@ -73,6 +73,8 @@ export function applyLayout(nodes, edges, options = {}) {
  */
 export function assignClosestHandles(nodes, edges) {
   const nodeMap = new Map(nodes.map(n => [n.id, n]));
+  const usedSourceHandles = new Map();
+  const usedTargetHandles = new Map();
 
   return edges.map(edge => {
     const sourceNode = nodeMap.get(edge.source);
@@ -88,6 +90,11 @@ export function assignClosestHandles(nodes, edges) {
     const outputCount = Math.max(1, sourceNode.data?.outputCount || 1);
     const inputCount = Math.max(1, targetNode.data?.inputCount || 1);
 
+    const srcKey = edge.source;
+    const tgtKey = edge.target;
+    if (!usedSourceHandles.has(srcKey)) usedSourceHandles.set(srcKey, new Set());
+    if (!usedTargetHandles.has(tgtKey)) usedTargetHandles.set(tgtKey, new Set());
+
     let bestS = 0;
     let bestT = 0;
     let bestDist = Infinity;
@@ -97,13 +104,19 @@ export function assignClosestHandles(nodes, edges) {
       for (let t = 0; t < inputCount; t++) {
         const thX = tx + ((t + 0.5) / inputCount) * targetDims.width;
         const dist = Math.abs(shX - thX);
-        if (dist < bestDist) {
-          bestDist = dist;
+        const srcUsed = usedSourceHandles.get(srcKey).has(s);
+        const tgtUsed = usedTargetHandles.get(tgtKey).has(t);
+        const adjustedDist = dist + (srcUsed ? 10000 : 0) + (tgtUsed ? 10000 : 0);
+        if (adjustedDist < bestDist) {
+          bestDist = adjustedDist;
           bestS = s;
           bestT = t;
         }
       }
     }
+
+    usedSourceHandles.get(srcKey).add(bestS);
+    usedTargetHandles.get(tgtKey).add(bestT);
 
     return {
       ...edge,
