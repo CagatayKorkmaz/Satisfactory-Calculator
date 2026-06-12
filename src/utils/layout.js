@@ -1,8 +1,8 @@
 import dagre from 'dagre';
 
 const NODE_DIMENSIONS = {
-  productionRootNode: { width: 240, height: 120 },
-  ingredientNode: { width: 220, height: 160 },
+  productionRootNode: { width: 240, height: 150 },
+  ingredientNode: { width: 220, height: 180 },
   rawNode: { width: 200, height: 130 },
   textNode: { width: 180, height: 60 },
 };
@@ -39,7 +39,7 @@ export function applyLayout(nodes, edges, options = {}) {
 
   dagre.layout(g);
 
-  const rootNode = nodes.find(n => n.data?.depth === 0 || n.id.endsWith('_root'));
+  const rootNode = nodes.find(n => n.type === 'productionRootNode');
 
   let rootDx = 0;
   let rootDy = 0;

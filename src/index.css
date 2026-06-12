@@ -738,6 +738,17 @@ html, body, #root {
 }
 
 /* ============================================================
+   Underclock / Machine Info
+   ============================================================ */
+.node-underclock {
+  font-size: 11px;
+  color: var(--color-primary);
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
    Text Node styles
    ============================================================ */
 .text-node-wrapper {

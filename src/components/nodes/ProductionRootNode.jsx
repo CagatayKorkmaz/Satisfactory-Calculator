@@ -1,34 +1,32 @@
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
-/**
- * ProductionRootNode — Üretim hattının kök düğümü (hedef ürün).
- * Kullanıcının seçtiği ürünü ve hedef miktarı gösterir.
- */
 const ProductionRootNode = memo(({ id, data, selected }) => {
   const {
     itemName,
     icon,
     machine,
     machineCount,
+    fullMachines,
+    underclockPercent,
     requiredAmount,
     standardAmount,
     onDelete,
   } = data;
+
+  const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
 
   return (
     <div
       className={`sf-node ${selected ? 'selected' : ''}`}
       style={{ minWidth: 220, position: 'relative' }}
     >
-      {/* Sil butonu */}
       {onDelete && (
         <button className="node-delete-btn" onClick={() => onDelete(id)} title="Sil">
           ✕
         </button>
       )}
 
-      {/* Header */}
       <div
         className="node-header"
         style={{
@@ -40,16 +38,20 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
           ? <img className="node-icon" src={icon} alt={itemName} />
           : <span className="node-icon">{icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="node-title" style={{ color: 'var(--color-primary)' }}>
+          <div className="node-title" style={{ color: 'var(--color-primary)', fontSize: 16, fontWeight: 700 }}>
             {itemName}
           </div>
           {machine && (
-            <div className="node-machine">
+            <div className="node-machine" style={{ fontSize: 14, fontWeight: 700 }}>
               {machine} × {machineCount}
             </div>
           )}
+          {machine && hasUnderclock && (
+            <div className="node-underclock">
+              {fullMachines} @ 100%, 1 @ %{underclockPercent}
+            </div>
+          )}
         </div>
-        {/* Hedef rozeti */}
         <div
           style={{
             background: 'var(--color-primary)',
@@ -66,7 +68,6 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
         </div>
       </div>
 
-      {/* Body */}
       <div className="node-body">
         <div className="node-amount-row">
           <span className="node-amount-label">Hedef Üretim</span>
@@ -87,7 +88,6 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
         )}
       </div>
 
-      {/* Alt bileşenlerden gelen bağlantılar (alttan) */}
       <Handle
         type="target"
         position={Position.Bottom}

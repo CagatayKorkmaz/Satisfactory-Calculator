@@ -12,15 +12,18 @@ const IngredientNode = memo(({ id, data, selected }) => {
     icon,
     machine,
     machineCount,
+    fullMachines,
+    underclockPercent,
     requiredAmount,
     standardAmount,
     userOverride,
     satisfied,
     overflowing,
-    depth,
     onOverrideChange,
     onDelete,
   } = data;
+
+  const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
 
   const [inputValue, setInputValue] = useState(
     userOverride !== null && userOverride !== undefined ? String(userOverride) : ''
@@ -73,10 +76,15 @@ const IngredientNode = memo(({ id, data, selected }) => {
           ? <img className="node-icon" src={icon} alt={itemName} />
           : <span className="node-icon">{icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="node-title">{itemName}</div>
+          <div className="node-title" style={{ fontSize: 15, fontWeight: 700 }}>{itemName}</div>
           {machine && (
-            <div className="node-machine">
-              {machine} × {machineCount > 0 ? machineCount : '—'}
+            <div className="node-machine" style={{ fontSize: 14, fontWeight: 700 }}>
+              {machine} × {machineCount > 0 ? machineCount : '\u2014'}
+            </div>
+          )}
+          {machine && hasUnderclock && (
+            <div className="node-underclock">
+              {fullMachines} @ 100%, 1 @ %{underclockPercent}
             </div>
           )}
         </div>
