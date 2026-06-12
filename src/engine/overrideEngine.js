@@ -48,6 +48,8 @@ export function computeNodeStatus(standardAmount, userOverride) {
 export function applyOverrides(nodes, edges, userOverrides) {
   // Her node'u override değerine göre güncelle
   const updatedNodes = nodes.map(node => {
+    if (node.type === 'byproductNode') return node;
+
     const override = userOverrides[node.data.itemName];
     const overrideValue = override !== undefined ? Number(override) : null;
 

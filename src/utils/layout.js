@@ -4,6 +4,7 @@ const NODE_DIMENSIONS = {
   productionRootNode: { width: 240, height: 150 },
   ingredientNode: { width: 220, height: 180 },
   rawNode: { width: 200, height: 130 },
+  byproductNode: { width: 180, height: 80 },
   textNode: { width: 180, height: 60 },
 };
 
@@ -11,15 +12,7 @@ const DEFAULT_DIMENSIONS = { width: 200, height: 120 };
 const elk = new ELK();
 
 function getNodeDimensions(node) {
-  const base = NODE_DIMENSIONS[node.type] || DEFAULT_DIMENSIONS;
-  const byproductCount = node.data?.byproducts?.length || 0;
-
-  if (byproductCount === 0) return base;
-
-  return {
-    ...base,
-    height: base.height + 34 + Math.max(0, byproductCount - 1) * 28,
-  };
+  return NODE_DIMENSIONS[node.type] || DEFAULT_DIMENSIONS;
 }
 
 export async function applyLayout(nodes, edges, options = {}) {
@@ -94,6 +87,8 @@ export function assignClosestHandles(nodes, edges) {
   const usedTargetHandles = new Map();
 
   return edges.map(edge => {
+    if (edge.data?.isByproduct) return edge;
+
     const sourceNode = nodeMap.get(edge.source);
     const targetNode = nodeMap.get(edge.target);
     if (!sourceNode || !targetNode) return edge;

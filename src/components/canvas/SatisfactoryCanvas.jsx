@@ -15,6 +15,7 @@ import TextNode from '../nodes/TextNode';
 import ProductionRootNode from '../nodes/ProductionRootNode';
 import IngredientNode from '../nodes/IngredientNode';
 import RawNode from '../nodes/RawNode';
+import ByproductNode from '../nodes/ByproductNode';
 import AddProductionModal from '../modals/AddProductionModal';
 import EditProductionModal from '../modals/EditProductionModal';
 
@@ -27,6 +28,7 @@ const nodeTypes = {
   productionRootNode: ProductionRootNode,
   ingredientNode: IngredientNode,
   rawNode: RawNode,
+  byproductNode: ByproductNode,
 };
 
 export default function SatisfactoryCanvas({ recipesData }) {
@@ -430,6 +432,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
           nodeColor={(n) => {
             if (n.type === 'productionRootNode') return '#f0a500';
             if (n.type === 'rawNode') return '#f59e0b';
+            if (n.type === 'byproductNode') return '#c084fc';
             if (n.data?.satisfied) return '#22c55e';
             return '#1e2d42';
           }}

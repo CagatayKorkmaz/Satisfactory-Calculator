@@ -121,8 +121,8 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
         underclockPercent,
         baseRate: recipe ? getRecipeOutputRate(recipe) : 0,
         scaleFactor: totalScaleFactor,
-        byproducts: recipe ? getRecipeByproducts(recipe, totalScaleFactor, itemsMap) : [],
         isRawResource,
+        byproductCount: 0,
         userOverride: null,
         satisfied: false,
         overflowing: false,
@@ -139,6 +139,58 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
       (recipe.ingredients || []).forEach(ing => {
         buildGraph(ing.item, ing.amount_per_min * sf, nodeId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx);
       });
+
+      const byproducts = getRecipeByproducts(recipe, sf, itemsMap);
+      if (byproducts.length > 0) {
+        entry.node.data.byproductCount = byproducts.length;
+
+        byproducts.forEach((byproduct, i) => {
+          const bpNodeId = `${nodeId}_bp_${byproduct.item.replace(/\s+/g, '_')}`;
+          const bpEdgeId = `edge_${nodeId}_${bpNodeId}`;
+
+          if (!edgeSet.has(bpEdgeId)) {
+            edgeSet.add(bpEdgeId);
+
+            const bpNode = {
+              id: bpNodeId,
+              type: 'byproductNode',
+              position: { x: 0, y: 0 },
+              data: {
+                itemName: byproduct.item,
+                icon: byproduct.icon,
+                category: byproduct.category,
+                requiredAmount: byproduct.amount,
+                standardAmount: byproduct.amount,
+                satisfied: false,
+                overflowing: false,
+                userOverride: null,
+              },
+            };
+
+            nodeMap.set(bpNodeId, { nodeId: bpNodeId, node: bpNode });
+
+            const bpEdgeColor = byproduct.category ? getEdgeColor(byproduct.category) : '#c084fc';
+
+            edges.push({
+              id: bpEdgeId,
+              source: nodeId,
+              target: bpNodeId,
+              sourceHandle: `byproduct-source-${i}`,
+              targetHandle: 'target-0',
+              type: 'default',
+              animated: false,
+              data: { flowRate: byproduct.amount, category: byproduct.category, isByproduct: true, edgeColor: bpEdgeColor },
+              style: { stroke: bpEdgeColor, strokeWidth: 2, opacity: 0.6 },
+              markerEnd: { type: 'arrowclosed', width: 14, height: 14, color: bpEdgeColor },
+              label: `${byproduct.item} ${byproduct.amount % 1 === 0 ? byproduct.amount.toString() : byproduct.amount.toFixed(2)}/dk`,
+              labelStyle: { fill: '#e2e8f0', fontWeight: 600, fontSize: 13, fontFamily: 'Share Tech Mono, monospace' },
+              labelBgStyle: { fill: '#0a0e1a' },
+              labelBgPadding: [6, 3],
+              labelBgBorderRadius: 4,
+            });
+          }
+        });
+      }
     }
   }
 

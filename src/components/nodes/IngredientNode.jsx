@@ -17,11 +17,11 @@ const IngredientNode = memo(({ id, data, selected }) => {
     onDelete,
     inputCount,
     outputCount,
-    byproducts = [],
+    byproductCount = 0,
   } = data;
 
   const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
-  const hasByproducts = byproducts.length > 0;
+  const hasByproducts = byproductCount > 0;
 
   const formatAmount = (value) => (
     value != null && value % 1 === 0 ? value.toString() : value?.toFixed(2)
@@ -99,22 +99,6 @@ const IngredientNode = memo(({ id, data, selected }) => {
           </span>
         </div>
 
-        {hasByproducts && (
-          <div className="node-byproducts">
-            <div className="node-byproducts-title">Yan Ürün</div>
-            {byproducts.map(byproduct => (
-              <div className="node-byproduct-row" key={byproduct.item}>
-                {byproduct.icon?.startsWith?.('/')
-                  ? <img className="node-byproduct-icon" src={byproduct.icon} alt={byproduct.item} />
-                  : <span className="node-byproduct-icon">{byproduct.icon}</span>}
-                <span className="node-byproduct-text">
-                  Üretilen Yan Ürün: {formatAmount(byproduct.amount)}/dk {byproduct.item}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
         <div
           className={`node-established-toggle ${satisfied ? 'active' : ''}`}
           onClick={handleToggleEstablished}
@@ -138,17 +122,16 @@ const IngredientNode = memo(({ id, data, selected }) => {
         );
       })}
 
-      {hasByproducts && byproducts.map((byproduct, i) => {
-        const count = byproducts.length;
-        const left = count === 1 ? '88%' : `${70 + (i / (count - 1)) * 20}%`;
+      {hasByproducts && Array.from({ length: byproductCount }, (_, i) => {
+        const count = Math.max(1, byproductCount);
+        const left = count === 1 ? '50%' : `${10 + (i / (count - 1)) * 80}%`;
         return (
           <Handle
             key={`byproduct-source-${i}`}
             type="source"
-            position={Position.Bottom}
+            position={Position.Top}
             id={`byproduct-source-${i}`}
-            title={byproduct.item}
-            style={{ background: '#c084fc', left, bottom: -6 }}
+            style={{ background: '#c084fc', left }}
           />
         );
       })}
