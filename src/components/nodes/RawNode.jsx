@@ -45,7 +45,9 @@ const RawNode = memo(({ id, data, selected }) => {
           background: 'rgba(245, 158, 11, 0.08)',
         }}
       >
-        <span className="node-icon">{icon}</span>
+        {icon.startsWith('/')
+          ? <img className="node-icon" src={icon} alt={itemName} />
+          : <span className="node-icon">{icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="node-title" style={{ color: 'var(--color-warning)' }}>
             {itemName}
@@ -89,7 +91,7 @@ const RawNode = memo(({ id, data, selected }) => {
       </div>
 
       <Handle
-        type="target"
+        type="source"
         position={Position.Top}
         style={{ background: getStatusColor() }}
       />

@@ -39,20 +39,16 @@ export function buildProductionTree(targetItem, targetAmount, recipes, itemsMap,
   const {
     parentId = null,
     depth = 0,
-    xBase = 0,
-    yBase = 0,
     visited = new Set(),
     nodeAccum = [],
     edgeAccum = [],
     nodeIdPrefix = 'tree',
-    positionMap = {},
   } = options;
 
   const nodeId = parentId
     ? `${nodeIdPrefix}_${targetItem.replace(/\s+/g, '_')}_${depth}_${nodeAccum.length}`
     : `${nodeIdPrefix}_root`;
 
-  // Döngüsel bağımlılık koruması
   if (visited.has(targetItem)) {
     return { nodes: nodeAccum, edges: edgeAccum };
   }
@@ -64,14 +60,10 @@ export function buildProductionTree(targetItem, targetAmount, recipes, itemsMap,
   const scaleFactor = recipe ? getScaleFactor(recipe, targetAmount) : 1;
   const machineCount = recipe ? Math.ceil(scaleFactor) : 0;
 
-  const xPos = xBase;
-  const yPos = yBase;
-
-  // Düğümü oluştur
   const node = {
     id: nodeId,
     type: isRawResource ? 'rawNode' : (depth === 0 ? 'productionRootNode' : 'ingredientNode'),
-    position: { x: xPos, y: yPos },
+    position: { x: 0, y: 0 },
     data: {
       itemName: targetItem,
       icon: itemMeta.icon,
@@ -91,7 +83,6 @@ export function buildProductionTree(targetItem, targetAmount, recipes, itemsMap,
 
   nodeAccum.push(node);
 
-  // Edge ekle (parent varsa)
   if (parentId) {
     const edgeId = `edge_${parentId}_${nodeId}`;
     edgeAccum.push({
@@ -105,24 +96,15 @@ export function buildProductionTree(targetItem, targetAmount, recipes, itemsMap,
     });
   }
 
-  // Ham kaynak ise veya tarif yoksa alt düğüm oluşturma
   if (isRawResource || !recipe) {
     return { nodes: nodeAccum, edges: edgeAccum };
   }
 
-  // Alt bileşenleri hesapla ve rekürsif olarak oluştur
-  const ingredientCount = recipe.ingredients.length;
-  const childSpacing = 280;
-  const totalWidth = (ingredientCount - 1) * childSpacing;
-  const childYOffset = 200;
-
   const visitedForChildren = new Set(visited);
   visitedForChildren.add(targetItem);
 
-  recipe.ingredients.forEach((ingredient, index) => {
+  recipe.ingredients.forEach((ingredient) => {
     const childAmount = ingredient.amount_per_min * scaleFactor;
-    const childX = xPos - totalWidth / 2 + index * childSpacing;
-    const childY = yPos + childYOffset + depth * 20;
 
     buildProductionTree(
       ingredient.item,
@@ -132,13 +114,10 @@ export function buildProductionTree(targetItem, targetAmount, recipes, itemsMap,
       {
         parentId: nodeId,
         depth: depth + 1,
-        xBase: childX,
-        yBase: childY,
         visited: visitedForChildren,
         nodeAccum,
         edgeAccum,
         nodeIdPrefix,
-        positionMap,
       }
     );
   });

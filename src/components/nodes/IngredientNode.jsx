@@ -69,7 +69,9 @@ const IngredientNode = memo(({ id, data, selected }) => {
 
       {/* Header */}
       <div className="node-header">
-        <span className="node-icon">{icon}</span>
+        {icon.startsWith('/')
+          ? <img className="node-icon" src={icon} alt={itemName} />
+          : <span className="node-icon">{icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="node-title">{itemName}</div>
           {machine && (
@@ -133,12 +135,12 @@ const IngredientNode = memo(({ id, data, selected }) => {
       {/* Connection handles */}
       <Handle
         type="source"
-        position={Position.Bottom}
+        position={Position.Top}
         style={{ background: getStatusColor() }}
       />
       <Handle
         type="target"
-        position={Position.Top}
+        position={Position.Bottom}
         style={{ background: getStatusColor() }}
       />
     </div>

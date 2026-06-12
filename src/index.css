@@ -624,7 +624,9 @@ html, body, #root {
 .item-icon {
   font-size: 20px;
   width: 28px;
+  height: 28px;
   text-align: center;
+  object-fit: contain;
 }
 
 .item-name {
@@ -652,6 +654,9 @@ html, body, #root {
 .node-icon {
   font-size: 22px;
   line-height: 1;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
 .node-title {

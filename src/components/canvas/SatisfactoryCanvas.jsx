@@ -19,6 +19,7 @@ import AddProductionModal from '../modals/AddProductionModal';
 
 import { buildProductionTree, generateTreeId } from '../../engine/recipeEngine';
 import { applyOverrides } from '../../engine/overrideEngine';
+import { applyLayout } from '../../utils/layout';
 
 // ReactFlow için node türleri kaydı
 const nodeTypes = {
@@ -174,15 +175,15 @@ export default function SatisfactoryCanvas({ recipesData }) {
       targetAmount,
       recipes,
       itemsMap,
-      {
-        xBase: centerX,
-        yBase: centerY,
-        nodeIdPrefix: treeId,
-      }
+      { nodeIdPrefix: treeId }
     );
 
-    // Callback'leri ekle
-    const nodesWithCallbacks = treeNodes.map(n => ({
+    const laidOutNodes = applyLayout(treeNodes, treeEdges, {
+      offsetX: centerX,
+      offsetY: centerY,
+    });
+
+    const nodesWithCallbacks = laidOutNodes.map(n => ({
       ...n,
       data: {
         ...n.data,

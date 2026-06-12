@@ -1,526 +1,1162 @@
-{
-  "items": {
-    "Iron Ore": { "name": "Iron Ore", "icon": "🪨", "category": "raw" },
-    "Copper Ore": { "name": "Copper Ore", "icon": "🟤", "category": "raw" },
-    "Coal": { "name": "Coal", "icon": "⬛", "category": "raw" },
-    "Limestone": { "name": "Limestone", "icon": "🪨", "category": "raw" },
-    "Caterium Ore": { "name": "Caterium Ore", "icon": "🟡", "category": "raw" },
-    "Raw Quartz": { "name": "Raw Quartz", "icon": "🔮", "category": "raw" },
-    "Sulfur": { "name": "Sulfur", "icon": "🟨", "category": "raw" },
-    "Bauxite": { "name": "Bauxite", "icon": "🟠", "category": "raw" },
-    "Nitrogen Gas": { "name": "Nitrogen Gas", "icon": "💨", "category": "raw" },
-    "Crude Oil": { "name": "Crude Oil", "icon": "🛢️", "category": "raw" },
-    "Water": { "name": "Water", "icon": "💧", "category": "raw" },
-
-    "Iron Ingot": { "name": "Iron Ingot", "icon": "🔩", "category": "ingot" },
-    "Copper Ingot": { "name": "Copper Ingot", "icon": "🔶", "category": "ingot" },
-    "Steel Ingot": { "name": "Steel Ingot", "icon": "⚙️", "category": "ingot" },
-    "Caterium Ingot": { "name": "Caterium Ingot", "icon": "🥇", "category": "ingot" },
-    "Aluminum Ingot": { "name": "Aluminum Ingot", "icon": "🪙", "category": "ingot" },
-
-    "Iron Plate": { "name": "Iron Plate", "icon": "🔲", "category": "part" },
-    "Iron Rod": { "name": "Iron Rod", "icon": "📏", "category": "part" },
-    "Screw": { "name": "Screw", "icon": "🔩", "category": "part" },
-    "Wire": { "name": "Wire", "icon": "〰️", "category": "part" },
-    "Cable": { "name": "Cable", "icon": "🔌", "category": "part" },
-    "Concrete": { "name": "Concrete", "icon": "🧱", "category": "part" },
-    "Copper Sheet": { "name": "Copper Sheet", "icon": "🟠", "category": "part" },
-    "Quickwire": { "name": "Quickwire", "icon": "⚡", "category": "part" },
-    "Silica": { "name": "Silica", "icon": "💎", "category": "part" },
-    "Steel Beam": { "name": "Steel Beam", "icon": "🏗️", "category": "part" },
-    "Steel Pipe": { "name": "Steel Pipe", "icon": "🔧", "category": "part" },
-    "Plastic": { "name": "Plastic", "icon": "🟦", "category": "part" },
-    "Rubber": { "name": "Rubber", "icon": "⬜", "category": "part" },
-    "Fuel": { "name": "Fuel", "icon": "⛽", "category": "fluid" },
-    "Heavy Oil Residue": { "name": "Heavy Oil Residue", "icon": "🛢️", "category": "fluid" },
-    "Polymer Resin": { "name": "Polymer Resin", "icon": "🧪", "category": "part" },
-    "Aluminum Sheet": { "name": "Aluminum Sheet", "icon": "🪙", "category": "part" },
-    "Alclad Aluminum Sheet": { "name": "Alclad Aluminum Sheet", "icon": "🪙", "category": "part" },
-    "Alumina Solution": { "name": "Alumina Solution", "icon": "🧪", "category": "fluid" },
-
-    "Reinforced Iron Plate": { "name": "Reinforced Iron Plate", "icon": "🛡️", "category": "component" },
-    "Modular Frame": { "name": "Modular Frame", "icon": "🏗️", "category": "component" },
-    "Rotor": { "name": "Rotor", "icon": "🌀", "category": "component" },
-    "Smart Plate": { "name": "Smart Plate", "icon": "📟", "category": "component" },
-    "Stator": { "name": "Stator", "icon": "⚡", "category": "component" },
-    "Motor": { "name": "Motor", "icon": "🔋", "category": "component" },
-    "Encased Industrial Beam": { "name": "Encased Industrial Beam", "icon": "🏗️", "category": "component" },
-    "Heavy Modular Frame": { "name": "Heavy Modular Frame", "icon": "🏗️", "category": "component" },
-    "Circuit Board": { "name": "Circuit Board", "icon": "💾", "category": "component" },
-    "AI Limiter": { "name": "AI Limiter", "icon": "🤖", "category": "component" },
-    "High-Speed Connector": { "name": "High-Speed Connector", "icon": "⚡", "category": "component" },
-    "Computer": { "name": "Computer", "icon": "💻", "category": "component" },
-    "Crystal Oscillator": { "name": "Crystal Oscillator", "icon": "🔮", "category": "component" },
-    "Supercomputer": { "name": "Supercomputer", "icon": "🖥️", "category": "component" },
-    "Radio Control Unit": { "name": "Radio Control Unit", "icon": "📡", "category": "component" },
-    "Cooling System": { "name": "Cooling System", "icon": "❄️", "category": "component" },
-    "Fused Modular Frame": { "name": "Fused Modular Frame", "icon": "🏗️", "category": "component" },
-    "Turbo Motor": { "name": "Turbo Motor", "icon": "🚀", "category": "component" },
-    "Electromagnetic Control Rod": { "name": "Electromagnetic Control Rod", "icon": "📡", "category": "component" },
-    "Assembly Director System": { "name": "Assembly Director System", "icon": "🎛️", "category": "component" },
-    "Magnetic Field Generator": { "name": "Magnetic Field Generator", "icon": "🧲", "category": "component" },
-    "Versatile Framework": { "name": "Versatile Framework", "icon": "🔧", "category": "component" },
-    "Automated Wiring": { "name": "Automated Wiring", "icon": "🔌", "category": "component" }
-  },
-  "recipes": [
-    {
-      "id": "iron_ingot",
-      "item": "Iron Ingot",
-      "output_per_min": 30,
-      "machine": "Smelter",
-      "ingredients": [
-        { "item": "Iron Ore", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "copper_ingot",
-      "item": "Copper Ingot",
-      "output_per_min": 30,
-      "machine": "Smelter",
-      "ingredients": [
-        { "item": "Copper Ore", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "steel_ingot",
-      "item": "Steel Ingot",
-      "output_per_min": 45,
-      "machine": "Foundry",
-      "ingredients": [
-        { "item": "Iron Ore", "amount_per_min": 45 },
-        { "item": "Coal", "amount_per_min": 45 }
-      ]
-    },
-    {
-      "id": "caterium_ingot",
-      "item": "Caterium Ingot",
-      "output_per_min": 15,
-      "machine": "Smelter",
-      "ingredients": [
-        { "item": "Caterium Ore", "amount_per_min": 45 }
-      ]
-    },
-    {
-      "id": "aluminum_ingot",
-      "item": "Aluminum Ingot",
-      "output_per_min": 60,
-      "machine": "Foundry",
-      "ingredients": [
-        { "item": "Alumina Solution", "amount_per_min": 90 },
-        { "item": "Silica", "amount_per_min": 75 }
-      ]
-    },
-    {
-      "id": "iron_plate",
-      "item": "Iron Plate",
-      "output_per_min": 20,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Iron Ingot", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "iron_rod",
-      "item": "Iron Rod",
-      "output_per_min": 15,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Iron Ingot", "amount_per_min": 15 }
-      ]
-    },
-    {
-      "id": "screw",
-      "item": "Screw",
-      "output_per_min": 40,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Iron Rod", "amount_per_min": 10 }
-      ]
-    },
-    {
-      "id": "wire",
-      "item": "Wire",
-      "output_per_min": 30,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Copper Ingot", "amount_per_min": 15 }
-      ]
-    },
-    {
-      "id": "cable",
-      "item": "Cable",
-      "output_per_min": 30,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Wire", "amount_per_min": 60 }
-      ]
-    },
-    {
-      "id": "concrete",
-      "item": "Concrete",
-      "output_per_min": 15,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Limestone", "amount_per_min": 45 }
-      ]
-    },
-    {
-      "id": "copper_sheet",
-      "item": "Copper Sheet",
-      "output_per_min": 10,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Copper Ingot", "amount_per_min": 20 }
-      ]
-    },
-    {
-      "id": "quickwire",
-      "item": "Quickwire",
-      "output_per_min": 60,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Caterium Ingot", "amount_per_min": 12 }
-      ]
-    },
-    {
-      "id": "silica",
-      "item": "Silica",
-      "output_per_min": 37.5,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Raw Quartz", "amount_per_min": 22.5 }
-      ]
-    },
-    {
-      "id": "steel_beam",
-      "item": "Steel Beam",
-      "output_per_min": 15,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Steel Ingot", "amount_per_min": 60 }
-      ]
-    },
-    {
-      "id": "steel_pipe",
-      "item": "Steel Pipe",
-      "output_per_min": 20,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Steel Ingot", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "plastic",
-      "item": "Plastic",
-      "output_per_min": 20,
-      "machine": "Refinery",
-      "ingredients": [
-        { "item": "Crude Oil", "amount_per_min": 30 }
-      ],
-      "byproducts": [
-        { "item": "Heavy Oil Residue", "amount_per_min": 10 }
-      ]
-    },
-    {
-      "id": "rubber",
-      "item": "Rubber",
-      "output_per_min": 20,
-      "machine": "Refinery",
-      "ingredients": [
-        { "item": "Crude Oil", "amount_per_min": 30 }
-      ],
-      "byproducts": [
-        { "item": "Heavy Oil Residue", "amount_per_min": 20 }
-      ]
-    },
-    {
-      "id": "fuel",
-      "item": "Fuel",
-      "output_per_min": 40,
-      "machine": "Refinery",
-      "ingredients": [
-        { "item": "Crude Oil", "amount_per_min": 60 }
-      ],
-      "byproducts": [
-        { "item": "Polymer Resin", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "alumina_solution",
-      "item": "Alumina Solution",
-      "output_per_min": 120,
-      "machine": "Refinery",
-      "ingredients": [
-        { "item": "Bauxite", "amount_per_min": 120 },
-        { "item": "Water", "amount_per_min": 180 }
-      ],
-      "byproducts": [
-        { "item": "Silica", "amount_per_min": 50 }
-      ]
-    },
-    {
-      "id": "aluminum_sheet",
-      "item": "Aluminum Sheet",
-      "output_per_min": 30,
-      "machine": "Constructor",
-      "ingredients": [
-        { "item": "Aluminum Ingot", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "alclad_aluminum_sheet",
-      "item": "Alclad Aluminum Sheet",
-      "output_per_min": 30,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Aluminum Ingot", "amount_per_min": 30 },
-        { "item": "Copper Ingot", "amount_per_min": 10 }
-      ]
-    },
-    {
-      "id": "reinforced_iron_plate",
-      "item": "Reinforced Iron Plate",
-      "output_per_min": 5,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Iron Plate", "amount_per_min": 30 },
-        { "item": "Screw", "amount_per_min": 60 }
-      ]
-    },
-    {
-      "id": "modular_frame",
-      "item": "Modular Frame",
-      "output_per_min": 2,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Reinforced Iron Plate", "amount_per_min": 3 },
-        { "item": "Iron Rod", "amount_per_min": 12 }
-      ]
-    },
-    {
-      "id": "rotor",
-      "item": "Rotor",
-      "output_per_min": 4,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Iron Rod", "amount_per_min": 20 },
-        { "item": "Screw", "amount_per_min": 100 }
-      ]
-    },
-    {
-      "id": "smart_plate",
-      "item": "Smart Plate",
-      "output_per_min": 2,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Reinforced Iron Plate", "amount_per_min": 2 },
-        { "item": "Rotor", "amount_per_min": 2 }
-      ]
-    },
-    {
-      "id": "stator",
-      "item": "Stator",
-      "output_per_min": 5,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Steel Pipe", "amount_per_min": 15 },
-        { "item": "Wire", "amount_per_min": 40 }
-      ]
-    },
-    {
-      "id": "motor",
-      "item": "Motor",
-      "output_per_min": 5,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Rotor", "amount_per_min": 10 },
-        { "item": "Stator", "amount_per_min": 10 }
-      ]
-    },
-    {
-      "id": "encased_industrial_beam",
-      "item": "Encased Industrial Beam",
-      "output_per_min": 6,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Steel Beam", "amount_per_min": 24 },
-        { "item": "Concrete", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "heavy_modular_frame",
-      "item": "Heavy Modular Frame",
-      "output_per_min": 2,
-      "machine": "Manufacturer",
-      "ingredients": [
-        { "item": "Modular Frame", "amount_per_min": 10 },
-        { "item": "Steel Pipe", "amount_per_min": 30 },
-        { "item": "Encased Industrial Beam", "amount_per_min": 10 },
-        { "item": "Screw", "amount_per_min": 200 }
-      ]
-    },
-    {
-      "id": "circuit_board",
-      "item": "Circuit Board",
-      "output_per_min": 7.5,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Copper Sheet", "amount_per_min": 15 },
-        { "item": "Plastic", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "ai_limiter",
-      "item": "AI Limiter",
-      "output_per_min": 5,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Copper Sheet", "amount_per_min": 25 },
-        { "item": "Quickwire", "amount_per_min": 100 }
-      ]
-    },
-    {
-      "id": "high_speed_connector",
-      "item": "High-Speed Connector",
-      "output_per_min": 3.75,
-      "machine": "Manufacturer",
-      "ingredients": [
-        { "item": "Quickwire", "amount_per_min": 210 },
-        { "item": "Cable", "amount_per_min": 37.5 },
-        { "item": "Circuit Board", "amount_per_min": 3.75 }
-      ]
-    },
-    {
-      "id": "computer",
-      "item": "Computer",
-      "output_per_min": 2.5,
-      "machine": "Manufacturer",
-      "ingredients": [
-        { "item": "Circuit Board", "amount_per_min": 10 },
-        { "item": "Cable", "amount_per_min": 20 },
-        { "item": "Plastic", "amount_per_min": 40 },
-        { "item": "Screw", "amount_per_min": 130 }
-      ]
-    },
-    {
-      "id": "crystal_oscillator",
-      "item": "Crystal Oscillator",
-      "output_per_min": 1,
-      "machine": "Manufacturer",
-      "ingredients": [
-        { "item": "Quartz Crystal", "amount_per_min": 36 },
-        { "item": "Cable", "amount_per_min": 28 },
-        { "item": "Reinforced Iron Plate", "amount_per_min": 5 }
-      ]
-    },
-    {
-      "id": "supercomputer",
-      "item": "Supercomputer",
-      "output_per_min": 2.5,
-      "machine": "Manufacturer",
-      "ingredients": [
-        { "item": "Computer", "amount_per_min": 3.75 },
-        { "item": "AI Limiter", "amount_per_min": 3.75 },
-        { "item": "High-Speed Connector", "amount_per_min": 5.625 },
-        { "item": "Plastic", "amount_per_min": 52.5 }
-      ]
-    },
-    {
-      "id": "radio_control_unit",
-      "item": "Radio Control Unit",
-      "output_per_min": 2.5,
-      "machine": "Manufacturer",
-      "ingredients": [
-        { "item": "Aluminum Casing", "amount_per_min": 32.5 },
-        { "item": "Crystal Oscillator", "amount_per_min": 1.5 },
-        { "item": "Computer", "amount_per_min": 2.5 }
-      ]
-    },
-    {
-      "id": "versatile_framework",
-      "item": "Versatile Framework",
-      "output_per_min": 5,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Modular Frame", "amount_per_min": 2.5 },
-        { "item": "Steel Beam", "amount_per_min": 30 }
-      ]
-    },
-    {
-      "id": "automated_wiring",
-      "item": "Automated Wiring",
-      "output_per_min": 2.5,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Stator", "amount_per_min": 2.5 },
-        { "item": "Cable", "amount_per_min": 50 }
-      ]
-    },
-    {
-      "id": "electromagnetic_control_rod",
-      "item": "Electromagnetic Control Rod",
-      "output_per_min": 4,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Stator", "amount_per_min": 6 },
-        { "item": "AI Limiter", "amount_per_min": 4 }
-      ]
-    },
-    {
-      "id": "cooling_system",
-      "item": "Cooling System",
-      "output_per_min": 6,
-      "machine": "Blender",
-      "ingredients": [
-        { "item": "Heat Sink", "amount_per_min": 12 },
-        { "item": "Rubber", "amount_per_min": 12 },
-        { "item": "Water", "amount_per_min": 30 },
-        { "item": "Nitrogen Gas", "amount_per_min": 150 }
-      ]
-    },
-    {
-      "id": "turbo_motor",
-      "item": "Turbo Motor",
-      "output_per_min": 1.875,
-      "machine": "Manufacturer",
-      "ingredients": [
-        { "item": "Cooling System", "amount_per_min": 7.5 },
-        { "item": "Radio Control Unit", "amount_per_min": 3.75 },
-        { "item": "Motor", "amount_per_min": 7.5 },
-        { "item": "Rubber", "amount_per_min": 15 }
-      ]
-    },
-    {
-      "id": "fused_modular_frame",
-      "item": "Fused Modular Frame",
-      "output_per_min": 1.5,
-      "machine": "Blender",
-      "ingredients": [
-        { "item": "Heavy Modular Frame", "amount_per_min": 1.5 },
-        { "item": "Aluminum Casing", "amount_per_min": 75 },
-        { "item": "Nitrogen Gas", "amount_per_min": 37.5 }
-      ]
-    },
-    {
-      "id": "assembly_director_system",
-      "item": "Assembly Director System",
-      "output_per_min": 0.75,
-      "machine": "Assembler",
-      "ingredients": [
-        { "item": "Automated Wiring", "amount_per_min": 1.5 },
-        { "item": "Supercomputer", "amount_per_min": 0.75 }
-      ]
-    },
-    {
-      "id": "magnetic_field_generator",
-      "item": "Magnetic Field Generator",
-      "output_per_min": 1,
-      "machine": "Manufacturer",
-      "ingredients": [
-        { "item": "Versatile Framework", "amount_per_min": 2.5 },
-        { "item": "Electromagnetic Control Rod", "amount_per_min": 1 },
-        { "item": "Battery", "amount_per_min": 5 }
-      ]
-    }
-  ]
+﻿{
+    "items":  {
+                  "Iron Ore":  {
+                                   "name":  "Iron Ore",
+                                   "icon":  "/images/items/Iron_Ore.png",
+                                   "category":  "raw"
+                               },
+                  "Copper Ore":  {
+                                     "name":  "Copper Ore",
+                                     "icon":  "/images/items/Copper_Ore.png",
+                                     "category":  "raw"
+                                 },
+                  "Coal":  {
+                               "name":  "Coal",
+                               "icon":  "/images/items/Coal.png",
+                               "category":  "raw"
+                           },
+                  "Limestone":  {
+                                    "name":  "Limestone",
+                                    "icon":  "/images/items/Limestone.png",
+                                    "category":  "raw"
+                                },
+                  "Caterium Ore":  {
+                                       "name":  "Caterium Ore",
+                                       "icon":  "/images/items/Caterium_Ore.png",
+                                       "category":  "raw"
+                                   },
+                  "Raw Quartz":  {
+                                     "name":  "Raw Quartz",
+                                     "icon":  "/images/items/Raw_Quartz.png",
+                                     "category":  "raw"
+                                 },
+                  "Sulfur":  {
+                                 "name":  "Sulfur",
+                                 "icon":  "/images/items/Sulfur.png",
+                                 "category":  "raw"
+                             },
+                  "Bauxite":  {
+                                  "name":  "Bauxite",
+                                  "icon":  "/images/items/Bauxite.png",
+                                  "category":  "raw"
+                              },
+                  "Nitrogen Gas":  {
+                                       "name":  "Nitrogen Gas",
+                                       "icon":  "/images/items/Nitrogen_Gas.png",
+                                       "category":  "raw"
+                                   },
+                  "Crude Oil":  {
+                                    "name":  "Crude Oil",
+                                    "icon":  "/images/items/Crude_Oil.png",
+                                    "category":  "raw"
+                                },
+                  "Water":  {
+                                "name":  "Water",
+                                "icon":  "/images/items/Water.png",
+                                "category":  "raw"
+                            },
+                  "Iron Ingot":  {
+                                     "name":  "Iron Ingot",
+                                     "icon":  "/images/items/Iron_Ingot.png",
+                                     "category":  "ingot"
+                                 },
+                  "Copper Ingot":  {
+                                       "name":  "Copper Ingot",
+                                       "icon":  "/images/items/Copper_Ingot.png",
+                                       "category":  "ingot"
+                                   },
+                  "Steel Ingot":  {
+                                      "name":  "Steel Ingot",
+                                      "icon":  "/images/items/Steel_Ingot.png",
+                                      "category":  "ingot"
+                                  },
+                  "Caterium Ingot":  {
+                                         "name":  "Caterium Ingot",
+                                         "icon":  "/images/items/Caterium_Ingot.png",
+                                         "category":  "ingot"
+                                     },
+                  "Aluminum Ingot":  {
+                                         "name":  "Aluminum Ingot",
+                                         "icon":  "/images/items/Aluminum_Ingot.png",
+                                         "category":  "ingot"
+                                     },
+                  "Iron Plate":  {
+                                     "name":  "Iron Plate",
+                                     "icon":  "/images/items/Iron_Plate.png",
+                                     "category":  "part"
+                                 },
+                  "Iron Rod":  {
+                                   "name":  "Iron Rod",
+                                   "icon":  "/images/items/Iron_Rod.png",
+                                   "category":  "part"
+                               },
+                  "Screw":  {
+                                "name":  "Screw",
+                                "icon":  "/images/items/Screws.png",
+                                "category":  "part"
+                            },
+                  "Wire":  {
+                               "name":  "Wire",
+                               "icon":  "/images/items/Wire.png",
+                               "category":  "part"
+                           },
+                  "Cable":  {
+                                "name":  "Cable",
+                                "icon":  "/images/items/Cable.png",
+                                "category":  "part"
+                            },
+                  "Concrete":  {
+                                   "name":  "Concrete",
+                                   "icon":  "/images/items/Concrete.png",
+                                   "category":  "part"
+                               },
+                  "Copper Sheet":  {
+                                       "name":  "Copper Sheet",
+                                       "icon":  "/images/items/Copper_Sheet.png",
+                                       "category":  "part"
+                                   },
+                  "Quickwire":  {
+                                    "name":  "Quickwire",
+                                    "icon":  "/images/items/Quickwire.png",
+                                    "category":  "part"
+                                },
+                  "Silica":  {
+                                 "name":  "Silica",
+                                 "icon":  "/images/items/Silica.png",
+                                 "category":  "part"
+                             },
+                  "Steel Beam":  {
+                                     "name":  "Steel Beam",
+                                     "icon":  "/images/items/Steel_Beam.png",
+                                     "category":  "part"
+                                 },
+                  "Steel Pipe":  {
+                                     "name":  "Steel Pipe",
+                                     "icon":  "/images/items/Steel_Pipe.png",
+                                     "category":  "part"
+                                 },
+                  "Plastic":  {
+                                  "name":  "Plastic",
+                                  "icon":  "/images/items/Plastic.png",
+                                  "category":  "part"
+                              },
+                  "Rubber":  {
+                                 "name":  "Rubber",
+                                 "icon":  "/images/items/Rubber.png",
+                                 "category":  "part"
+                             },
+                  "Fuel":  {
+                               "name":  "Fuel",
+                               "icon":  "/images/items/Fuel.png",
+                               "category":  "fluid"
+                           },
+                  "Heavy Oil Residue":  {
+                                            "name":  "Heavy Oil Residue",
+                                            "icon":  "/images/items/Heavy_Oil_Residue.png",
+                                            "category":  "fluid"
+                                        },
+                  "Polymer Resin":  {
+                                        "name":  "Polymer Resin",
+                                        "icon":  "/images/items/Polymer_Resin.png",
+                                        "category":  "part"
+                                    },
+                  "Aluminum Sheet":  {
+                                         "name":  "Aluminum Sheet",
+                                         "icon":  "/images/items/Alclad_Aluminum_Sheet.png",
+                                         "category":  "part"
+                                     },
+                  "Alclad Aluminum Sheet":  {
+                                                "name":  "Alclad Aluminum Sheet",
+                                                "icon":  "/images/items/Alclad_Aluminum_Sheet.png",
+                                                "category":  "part"
+                                            },
+                  "Alumina Solution":  {
+                                           "name":  "Alumina Solution",
+                                           "icon":  "/images/items/Alumina_Solution.png",
+                                           "category":  "fluid"
+                                       },
+                  "Reinforced Iron Plate":  {
+                                                "name":  "Reinforced Iron Plate",
+                                                "icon":  "/images/items/Reinforced_Iron_Plate.png",
+                                                "category":  "component"
+                                            },
+                  "Modular Frame":  {
+                                        "name":  "Modular Frame",
+                                        "icon":  "/images/items/Modular_Frame.png",
+                                        "category":  "component"
+                                    },
+                  "Rotor":  {
+                                "name":  "Rotor",
+                                "icon":  "/images/items/Rotor.png",
+                                "category":  "component"
+                            },
+                  "Smart Plate":  {
+                                      "name":  "Smart Plate",
+                                      "icon":  "/images/items/Smart_Plating.png",
+                                      "category":  "component"
+                                  },
+                  "Stator":  {
+                                 "name":  "Stator",
+                                 "icon":  "/images/items/Stator.png",
+                                 "category":  "component"
+                             },
+                  "Motor":  {
+                                "name":  "Motor",
+                                "icon":  "/images/items/Motor.png",
+                                "category":  "component"
+                            },
+                  "Encased Industrial Beam":  {
+                                                  "name":  "Encased Industrial Beam",
+                                                  "icon":  "/images/items/Encased_Industrial_Beam.png",
+                                                  "category":  "component"
+                                              },
+                  "Heavy Modular Frame":  {
+                                              "name":  "Heavy Modular Frame",
+                                              "icon":  "/images/items/Heavy_Modular_Frame.png",
+                                              "category":  "component"
+                                          },
+                  "Circuit Board":  {
+                                        "name":  "Circuit Board",
+                                        "icon":  "/images/items/Circuit_Board.png",
+                                        "category":  "component"
+                                    },
+                  "AI Limiter":  {
+                                     "name":  "AI Limiter",
+                                     "icon":  "/images/items/AI_Limiter.png",
+                                     "category":  "component"
+                                 },
+                  "High-Speed Connector":  {
+                                               "name":  "High-Speed Connector",
+                                               "icon":  "/images/items/High-Speed_Connector.png",
+                                               "category":  "component"
+                                           },
+                  "Computer":  {
+                                   "name":  "Computer",
+                                   "icon":  "/images/items/Computer.png",
+                                   "category":  "component"
+                               },
+                  "Crystal Oscillator":  {
+                                             "name":  "Crystal Oscillator",
+                                             "icon":  "/images/items/Crystal_Oscillator.png",
+                                             "category":  "component"
+                                         },
+                  "Supercomputer":  {
+                                        "name":  "Supercomputer",
+                                        "icon":  "/images/items/Supercomputer.png",
+                                        "category":  "component"
+                                    },
+                  "Radio Control Unit":  {
+                                             "name":  "Radio Control Unit",
+                                             "icon":  "/images/items/Radio_Control_Unit.png",
+                                             "category":  "component"
+                                         },
+                  "Cooling System":  {
+                                         "name":  "Cooling System",
+                                         "icon":  "/images/items/Cooling_System.png",
+                                         "category":  "component"
+                                     },
+                  "Fused Modular Frame":  {
+                                              "name":  "Fused Modular Frame",
+                                              "icon":  "/images/items/Fused_Modular_Frame.png",
+                                              "category":  "component"
+                                          },
+                  "Turbo Motor":  {
+                                      "name":  "Turbo Motor",
+                                      "icon":  "/images/items/Turbo_Motor.png",
+                                      "category":  "component"
+                                  },
+                  "Electromagnetic Control Rod":  {
+                                                      "name":  "Electromagnetic Control Rod",
+                                                      "icon":  "/images/items/Electromagnetic_Control_Rod.png",
+                                                      "category":  "component"
+                                                  },
+                  "Assembly Director System":  {
+                                                   "name":  "Assembly Director System",
+                                                   "icon":  "/images/items/Assembly_Director_System.png",
+                                                   "category":  "component"
+                                               },
+                  "Magnetic Field Generator":  {
+                                                   "name":  "Magnetic Field Generator",
+                                                   "icon":  "/images/items/Magnetic_Field_Generator.png",
+                                                   "category":  "component"
+                                               },
+                  "Versatile Framework":  {
+                                              "name":  "Versatile Framework",
+                                              "icon":  "/images/items/Versatile_Framework.png",
+                                              "category":  "component"
+                                          },
+                  "Automated Wiring":  {
+                                           "name":  "Automated Wiring",
+                                           "icon":  "/images/items/Automated_Wiring.png",
+                                           "category":  "component"
+                                       },
+                  "Quartz Crystal":  {
+                                         "icon":  "/images/items/Quartz_Crystal.png",
+                                         "category":  "part",
+                                         "name":  "Quartz Crystal"
+                                     },
+                  "Aluminum Casing":  {
+                                          "icon":  "/images/items/Aluminum_Casing.png",
+                                          "category":  "part",
+                                          "name":  "Aluminum Casing"
+                                      },
+                  "Heat Sink":  {
+                                    "icon":  "/images/items/Heat_Sink.png",
+                                    "category":  "component",
+                                    "name":  "Heat Sink"
+                                },
+                  "Battery":  {
+                                  "icon":  "/images/items/Battery.png",
+                                  "category":  "component",
+                                  "name":  "Battery"
+                              },
+                  "Modular Engine":  {
+                                         "icon":  "/images/items/Modular_Engine.png",
+                                         "category":  "component",
+                                         "name":  "Modular Engine"
+                                     },
+                  "Thermal Propulsion Rocket":  {
+                                                    "icon":  "/images/items/Thermal_Propulsion_Rocket.png",
+                                                    "category":  "component",
+                                                    "name":  "Thermal Propulsion Rocket"
+                                                }
+              },
+    "recipes":  [
+                    {
+                        "id":  "iron_ingot",
+                        "item":  "Iron Ingot",
+                        "output_per_min":  30,
+                        "machine":  "Smelter",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Iron Ore",
+                                                "amount_per_min":  30
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "copper_ingot",
+                        "item":  "Copper Ingot",
+                        "output_per_min":  30,
+                        "machine":  "Smelter",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Copper Ore",
+                                                "amount_per_min":  30
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "steel_ingot",
+                        "item":  "Steel Ingot",
+                        "output_per_min":  45,
+                        "machine":  "Foundry",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Iron Ore",
+                                                "amount_per_min":  45
+                                            },
+                                            {
+                                                "item":  "Coal",
+                                                "amount_per_min":  45
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "caterium_ingot",
+                        "item":  "Caterium Ingot",
+                        "output_per_min":  15,
+                        "machine":  "Smelter",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Caterium Ore",
+                                                "amount_per_min":  45
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "aluminum_ingot",
+                        "item":  "Aluminum Ingot",
+                        "output_per_min":  60,
+                        "machine":  "Foundry",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Alumina Solution",
+                                                "amount_per_min":  90
+                                            },
+                                            {
+                                                "item":  "Silica",
+                                                "amount_per_min":  75
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "iron_plate",
+                        "item":  "Iron Plate",
+                        "output_per_min":  20,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Iron Ingot",
+                                                "amount_per_min":  30
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "iron_rod",
+                        "item":  "Iron Rod",
+                        "output_per_min":  15,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Iron Ingot",
+                                                "amount_per_min":  15
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "screw",
+                        "item":  "Screw",
+                        "output_per_min":  40,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Iron Rod",
+                                                "amount_per_min":  10
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "wire",
+                        "item":  "Wire",
+                        "output_per_min":  30,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Copper Ingot",
+                                                "amount_per_min":  15
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "cable",
+                        "item":  "Cable",
+                        "output_per_min":  30,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Wire",
+                                                "amount_per_min":  60
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "concrete",
+                        "item":  "Concrete",
+                        "output_per_min":  15,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Limestone",
+                                                "amount_per_min":  45
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "copper_sheet",
+                        "item":  "Copper Sheet",
+                        "output_per_min":  10,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Copper Ingot",
+                                                "amount_per_min":  20
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "quickwire",
+                        "item":  "Quickwire",
+                        "output_per_min":  60,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Caterium Ingot",
+                                                "amount_per_min":  12
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "silica",
+                        "item":  "Silica",
+                        "output_per_min":  37.5,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Raw Quartz",
+                                                "amount_per_min":  22.5
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "steel_beam",
+                        "item":  "Steel Beam",
+                        "output_per_min":  15,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Steel Ingot",
+                                                "amount_per_min":  60
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "steel_pipe",
+                        "item":  "Steel Pipe",
+                        "output_per_min":  20,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Steel Ingot",
+                                                "amount_per_min":  30
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "plastic",
+                        "item":  "Plastic",
+                        "output_per_min":  20,
+                        "machine":  "Refinery",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Crude Oil",
+                                                "amount_per_min":  30
+                                            }
+                                        ],
+                        "byproducts":  [
+                                           {
+                                               "item":  "Heavy Oil Residue",
+                                               "amount_per_min":  10
+                                           }
+                                       ]
+                    },
+                    {
+                        "id":  "rubber",
+                        "item":  "Rubber",
+                        "output_per_min":  20,
+                        "machine":  "Refinery",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Crude Oil",
+                                                "amount_per_min":  30
+                                            }
+                                        ],
+                        "byproducts":  [
+                                           {
+                                               "item":  "Heavy Oil Residue",
+                                               "amount_per_min":  20
+                                           }
+                                       ]
+                    },
+                    {
+                        "id":  "fuel",
+                        "item":  "Fuel",
+                        "output_per_min":  40,
+                        "machine":  "Refinery",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Crude Oil",
+                                                "amount_per_min":  60
+                                            }
+                                        ],
+                        "byproducts":  [
+                                           {
+                                               "item":  "Polymer Resin",
+                                               "amount_per_min":  30
+                                           }
+                                       ]
+                    },
+                    {
+                        "id":  "alumina_solution",
+                        "item":  "Alumina Solution",
+                        "output_per_min":  120,
+                        "machine":  "Refinery",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Bauxite",
+                                                "amount_per_min":  120
+                                            },
+                                            {
+                                                "item":  "Water",
+                                                "amount_per_min":  180
+                                            }
+                                        ],
+                        "byproducts":  [
+                                           {
+                                               "item":  "Silica",
+                                               "amount_per_min":  50
+                                           }
+                                       ]
+                    },
+                    {
+                        "id":  "aluminum_sheet",
+                        "item":  "Aluminum Sheet",
+                        "output_per_min":  30,
+                        "machine":  "Constructor",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Aluminum Ingot",
+                                                "amount_per_min":  30
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "alclad_aluminum_sheet",
+                        "item":  "Alclad Aluminum Sheet",
+                        "output_per_min":  30,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Aluminum Ingot",
+                                                "amount_per_min":  30
+                                            },
+                                            {
+                                                "item":  "Copper Ingot",
+                                                "amount_per_min":  10
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "reinforced_iron_plate",
+                        "item":  "Reinforced Iron Plate",
+                        "output_per_min":  5,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Iron Plate",
+                                                "amount_per_min":  30
+                                            },
+                                            {
+                                                "item":  "Screw",
+                                                "amount_per_min":  60
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "modular_frame",
+                        "item":  "Modular Frame",
+                        "output_per_min":  2,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Reinforced Iron Plate",
+                                                "amount_per_min":  3
+                                            },
+                                            {
+                                                "item":  "Iron Rod",
+                                                "amount_per_min":  12
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "rotor",
+                        "item":  "Rotor",
+                        "output_per_min":  4,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Iron Rod",
+                                                "amount_per_min":  20
+                                            },
+                                            {
+                                                "item":  "Screw",
+                                                "amount_per_min":  100
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "smart_plate",
+                        "item":  "Smart Plate",
+                        "output_per_min":  2,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Reinforced Iron Plate",
+                                                "amount_per_min":  2
+                                            },
+                                            {
+                                                "item":  "Rotor",
+                                                "amount_per_min":  2
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "stator",
+                        "item":  "Stator",
+                        "output_per_min":  5,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Steel Pipe",
+                                                "amount_per_min":  15
+                                            },
+                                            {
+                                                "item":  "Wire",
+                                                "amount_per_min":  40
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "motor",
+                        "item":  "Motor",
+                        "output_per_min":  5,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Rotor",
+                                                "amount_per_min":  10
+                                            },
+                                            {
+                                                "item":  "Stator",
+                                                "amount_per_min":  10
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "encased_industrial_beam",
+                        "item":  "Encased Industrial Beam",
+                        "output_per_min":  6,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Steel Beam",
+                                                "amount_per_min":  24
+                                            },
+                                            {
+                                                "item":  "Concrete",
+                                                "amount_per_min":  30
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "heavy_modular_frame",
+                        "item":  "Heavy Modular Frame",
+                        "output_per_min":  2,
+                        "machine":  "Manufacturer",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Modular Frame",
+                                                "amount_per_min":  10
+                                            },
+                                            {
+                                                "item":  "Steel Pipe",
+                                                "amount_per_min":  30
+                                            },
+                                            {
+                                                "item":  "Encased Industrial Beam",
+                                                "amount_per_min":  10
+                                            },
+                                            {
+                                                "item":  "Screw",
+                                                "amount_per_min":  200
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "circuit_board",
+                        "item":  "Circuit Board",
+                        "output_per_min":  7.5,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Copper Sheet",
+                                                "amount_per_min":  15
+                                            },
+                                            {
+                                                "item":  "Plastic",
+                                                "amount_per_min":  30
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "ai_limiter",
+                        "item":  "AI Limiter",
+                        "output_per_min":  5,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Copper Sheet",
+                                                "amount_per_min":  25
+                                            },
+                                            {
+                                                "item":  "Quickwire",
+                                                "amount_per_min":  100
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "high_speed_connector",
+                        "item":  "High-Speed Connector",
+                        "output_per_min":  3.75,
+                        "machine":  "Manufacturer",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Quickwire",
+                                                "amount_per_min":  210
+                                            },
+                                            {
+                                                "item":  "Cable",
+                                                "amount_per_min":  37.5
+                                            },
+                                            {
+                                                "item":  "Circuit Board",
+                                                "amount_per_min":  3.75
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "computer",
+                        "item":  "Computer",
+                        "output_per_min":  2.5,
+                        "machine":  "Manufacturer",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Circuit Board",
+                                                "amount_per_min":  10
+                                            },
+                                            {
+                                                "item":  "Cable",
+                                                "amount_per_min":  20
+                                            },
+                                            {
+                                                "item":  "Plastic",
+                                                "amount_per_min":  40
+                                            },
+                                            {
+                                                "item":  "Screw",
+                                                "amount_per_min":  130
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "crystal_oscillator",
+                        "item":  "Crystal Oscillator",
+                        "output_per_min":  1,
+                        "machine":  "Manufacturer",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Quartz Crystal",
+                                                "amount_per_min":  36
+                                            },
+                                            {
+                                                "item":  "Cable",
+                                                "amount_per_min":  28
+                                            },
+                                            {
+                                                "item":  "Reinforced Iron Plate",
+                                                "amount_per_min":  5
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "supercomputer",
+                        "item":  "Supercomputer",
+                        "output_per_min":  2.5,
+                        "machine":  "Manufacturer",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Computer",
+                                                "amount_per_min":  3.75
+                                            },
+                                            {
+                                                "item":  "AI Limiter",
+                                                "amount_per_min":  3.75
+                                            },
+                                            {
+                                                "item":  "High-Speed Connector",
+                                                "amount_per_min":  5.625
+                                            },
+                                            {
+                                                "item":  "Plastic",
+                                                "amount_per_min":  52.5
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "radio_control_unit",
+                        "item":  "Radio Control Unit",
+                        "output_per_min":  2.5,
+                        "machine":  "Manufacturer",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Aluminum Casing",
+                                                "amount_per_min":  32.5
+                                            },
+                                            {
+                                                "item":  "Crystal Oscillator",
+                                                "amount_per_min":  1.5
+                                            },
+                                            {
+                                                "item":  "Computer",
+                                                "amount_per_min":  2.5
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "versatile_framework",
+                        "item":  "Versatile Framework",
+                        "output_per_min":  5,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Modular Frame",
+                                                "amount_per_min":  2.5
+                                            },
+                                            {
+                                                "item":  "Steel Beam",
+                                                "amount_per_min":  30
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "automated_wiring",
+                        "item":  "Automated Wiring",
+                        "output_per_min":  2.5,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Stator",
+                                                "amount_per_min":  2.5
+                                            },
+                                            {
+                                                "item":  "Cable",
+                                                "amount_per_min":  50
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "electromagnetic_control_rod",
+                        "item":  "Electromagnetic Control Rod",
+                        "output_per_min":  4,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Stator",
+                                                "amount_per_min":  6
+                                            },
+                                            {
+                                                "item":  "AI Limiter",
+                                                "amount_per_min":  4
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "cooling_system",
+                        "item":  "Cooling System",
+                        "output_per_min":  6,
+                        "machine":  "Blender",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Heat Sink",
+                                                "amount_per_min":  12
+                                            },
+                                            {
+                                                "item":  "Rubber",
+                                                "amount_per_min":  12
+                                            },
+                                            {
+                                                "item":  "Water",
+                                                "amount_per_min":  30
+                                            },
+                                            {
+                                                "item":  "Nitrogen Gas",
+                                                "amount_per_min":  150
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "turbo_motor",
+                        "item":  "Turbo Motor",
+                        "output_per_min":  1.875,
+                        "machine":  "Manufacturer",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Cooling System",
+                                                "amount_per_min":  7.5
+                                            },
+                                            {
+                                                "item":  "Radio Control Unit",
+                                                "amount_per_min":  3.75
+                                            },
+                                            {
+                                                "item":  "Motor",
+                                                "amount_per_min":  7.5
+                                            },
+                                            {
+                                                "item":  "Rubber",
+                                                "amount_per_min":  15
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "fused_modular_frame",
+                        "item":  "Fused Modular Frame",
+                        "output_per_min":  1.5,
+                        "machine":  "Blender",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Heavy Modular Frame",
+                                                "amount_per_min":  1.5
+                                            },
+                                            {
+                                                "item":  "Aluminum Casing",
+                                                "amount_per_min":  75
+                                            },
+                                            {
+                                                "item":  "Nitrogen Gas",
+                                                "amount_per_min":  37.5
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "assembly_director_system",
+                        "item":  "Assembly Director System",
+                        "output_per_min":  0.75,
+                        "machine":  "Assembler",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Automated Wiring",
+                                                "amount_per_min":  1.5
+                                            },
+                                            {
+                                                "item":  "Supercomputer",
+                                                "amount_per_min":  0.75
+                                            }
+                                        ]
+                    },
+                    {
+                        "id":  "magnetic_field_generator",
+                        "item":  "Magnetic Field Generator",
+                        "output_per_min":  1,
+                        "machine":  "Manufacturer",
+                        "ingredients":  [
+                                            {
+                                                "item":  "Versatile Framework",
+                                                "amount_per_min":  2.5
+                                            },
+                                            {
+                                                "item":  "Electromagnetic Control Rod",
+                                                "amount_per_min":  1
+                                            },
+                                            {
+                                                "item":  "Battery",
+                                                "amount_per_min":  5
+                                            }
+                                        ]
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Raw Quartz",
+                                                "amount_per_min":  22.5
+                                            }
+                                        ],
+                        "output_per_min":  22.5,
+                        "id":  "quartz_crystal",
+                        "item":  "Quartz Crystal",
+                        "machine":  "Constructor"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Aluminum Ingot",
+                                                "amount_per_min":  30
+                                            }
+                                        ],
+                        "output_per_min":  30,
+                        "id":  "aluminum_casing",
+                        "item":  "Aluminum Casing",
+                        "machine":  "Constructor"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Aluminum Casing",
+                                                "amount_per_min":  18
+                                            },
+                                            {
+                                                "item":  "Copper Sheet",
+                                                "amount_per_min":  16
+                                            }
+                                        ],
+                        "output_per_min":  12,
+                        "id":  "heat_sink",
+                        "item":  "Heat Sink",
+                        "machine":  "Assembler"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Sulfur",
+                                                "amount_per_min":  40
+                                            },
+                                            {
+                                                "item":  "Alumina Solution",
+                                                "amount_per_min":  30
+                                            },
+                                            {
+                                                "item":  "Copper Sheet",
+                                                "amount_per_min":  60
+                                            }
+                                        ],
+                        "output_per_min":  12,
+                        "id":  "battery",
+                        "item":  "Battery",
+                        "machine":  "Manufacturer"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Motor",
+                                                "amount_per_min":  2
+                                            },
+                                            {
+                                                "item":  "Rubber",
+                                                "amount_per_min":  15
+                                            },
+                                            {
+                                                "item":  "Smart Plate",
+                                                "amount_per_min":  2
+                                            }
+                                        ],
+                        "output_per_min":  1,
+                        "id":  "modular_engine",
+                        "item":  "Modular Engine",
+                        "machine":  "Manufacturer"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Modular Engine",
+                                                "amount_per_min":  5
+                                            },
+                                            {
+                                                "item":  "Turbo Motor",
+                                                "amount_per_min":  2
+                                            },
+                                            {
+                                                "item":  "Cooling System",
+                                                "amount_per_min":  6
+                                            },
+                                            {
+                                                "item":  "Fused Modular Frame",
+                                                "amount_per_min":  2
+                                            }
+                                        ],
+                        "output_per_min":  2,
+                        "id":  "thermal_propulsion_rocket",
+                        "item":  "Thermal Propulsion Rocket",
+                        "machine":  "Manufacturer"
+                    }
+                ]
 }

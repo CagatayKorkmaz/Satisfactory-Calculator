@@ -88,7 +88,9 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
                   className={`item-list-item ${isSelected ? 'selected' : ''}`}
                   onClick={() => setSelectedItem(recipe)}
                 >
-                  <span className="item-icon">{meta.icon}</span>
+                  {meta.icon.startsWith('/')
+                  ? <img className="item-icon" src={meta.icon} alt={recipe.item} />
+                  : <span className="item-icon">{meta.icon}</span>}
                   <div style={{ flex: 1 }}>
                     <div className="item-name">{recipe.item}</div>
                     <div className="item-meta">
@@ -108,7 +110,11 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
         {selectedItem && (
           <div className="form-group" style={{ animation: 'slideUp 200ms ease' }}>
             <label className="form-label" htmlFor="target-amount">
-              Hedef Üretim ({selectedMeta?.icon} {selectedItem.item} /dk)
+              Hedef Üretim ({selectedMeta?.icon?.startsWith('/')
+                ? '' : selectedMeta?.icon} {selectedItem.item} /dk)
+              {selectedMeta?.icon?.startsWith('/') &&
+                <img src={selectedMeta.icon} alt="" style={{width:18,height:18,verticalAlign:'middle',marginLeft:4}} />
+              }
             </label>
             <input
               id="target-amount"
