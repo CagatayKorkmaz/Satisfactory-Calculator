@@ -66,3 +66,49 @@ export function applyLayout(nodes, edges, options = {}) {
     };
   });
 }
+
+/**
+ * Re-assigns source/target handle IDs on edges so each connection
+ * uses the horizontally closest handles, preventing long edge arcs.
+ */
+export function assignClosestHandles(nodes, edges) {
+  const nodeMap = new Map(nodes.map(n => [n.id, n]));
+
+  return edges.map(edge => {
+    const sourceNode = nodeMap.get(edge.source);
+    const targetNode = nodeMap.get(edge.target);
+    if (!sourceNode || !targetNode) return edge;
+
+    const sourceDims = NODE_DIMENSIONS[sourceNode.type] || DEFAULT_DIMENSIONS;
+    const targetDims = NODE_DIMENSIONS[targetNode.type] || DEFAULT_DIMENSIONS;
+
+    const sx = sourceNode.position.x;
+    const tx = targetNode.position.x;
+
+    const outputCount = Math.max(1, sourceNode.data?.outputCount || 1);
+    const inputCount = Math.max(1, targetNode.data?.inputCount || 1);
+
+    let bestS = 0;
+    let bestT = 0;
+    let bestDist = Infinity;
+
+    for (let s = 0; s < outputCount; s++) {
+      const shX = sx + ((s + 0.5) / outputCount) * sourceDims.width;
+      for (let t = 0; t < inputCount; t++) {
+        const thX = tx + ((t + 0.5) / inputCount) * targetDims.width;
+        const dist = Math.abs(shX - thX);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestS = s;
+          bestT = t;
+        }
+      }
+    }
+
+    return {
+      ...edge,
+      sourceHandle: `source-${bestS}`,
+      targetHandle: `target-${bestT}`,
+    };
+  });
+}

@@ -1,3 +1,15 @@
+const CATEGORY_COLORS = {
+  raw: '#d97706',
+  ingot: '#64748b',
+  part: '#ea580c',
+  component: '#0d9488',
+  fluid: '#0284c7',
+};
+
+function getEdgeColor(category) {
+  return CATEGORY_COLORS[category] || '#4a5a75';
+}
+
 export function findRecipe(itemName, recipes) {
   return recipes.find(r => r.item === itemName) || null;
 }
@@ -22,7 +34,7 @@ function accumulateAmounts(item, amount, recipes, pathVisited, amounts) {
   });
 }
 
-function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet) {
+function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx) {
   let entry = nodeMap.get(item);
   const recipe = findRecipe(item, recipes);
   const isRawResource = !recipe;
@@ -45,6 +57,9 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
         : 0;
     }
 
+    const category = itemMeta.category || 'unknown';
+    const edgeColor = getEdgeColor(category);
+
     const node = {
       id: nodeId,
       type: isRawResource ? 'rawNode' : 'ingredientNode',
@@ -52,7 +67,8 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
       data: {
         itemName: item,
         icon: itemMeta.icon,
-        category: itemMeta.category,
+        category,
+        edgeColor,
         requiredAmount: totalAmount,
         standardAmount: totalAmount,
         machine: recipe?.machine || null,
@@ -65,6 +81,8 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
         userOverride: null,
         satisfied: false,
         overflowing: false,
+        inputCount: 0,
+        outputCount: 0,
       },
     };
 
@@ -74,7 +92,7 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
     if (!isRawResource && recipe) {
       const sf = getScaleFactor(recipe, totalAmount);
       recipe.ingredients.forEach(ing => {
-        buildGraph(ing.item, ing.amount_per_min * sf, nodeId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet);
+        buildGraph(ing.item, ing.amount_per_min * sf, nodeId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx);
       });
     }
   }
@@ -83,14 +101,32 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
     const edgeId = `edge_${parentId}_${entry.nodeId}`;
     if (!edgeSet.has(edgeId)) {
       edgeSet.add(edgeId);
+
+      const sourceIdx = (edgeHandleIdx.source.get(entry.nodeId) || 0);
+      edgeHandleIdx.source.set(entry.nodeId, sourceIdx + 1);
+      const targetIdx = (edgeHandleIdx.target.get(parentId) || 0);
+      edgeHandleIdx.target.set(parentId, targetIdx + 1);
+
+      const category = entry.node.data.category || 'unknown';
+      const edgeColor = getEdgeColor(category);
+
       edges.push({
         id: edgeId,
         source: entry.nodeId,
         target: parentId,
-        type: 'smoothstep',
+        sourceHandle: `source-${sourceIdx}`,
+        targetHandle: `target-${targetIdx}`,
+        type: 'default',
         animated: false,
         className: '',
-        data: { satisfied: false, overflow: false },
+        data: { satisfied: false, overflow: false, flowRate: amount, category, edgeColor },
+        style: { stroke: edgeColor, strokeWidth: 2, opacity: 0.6 },
+        markerEnd: { type: 'arrowclosed', width: 14, height: 14, color: edgeColor },
+        label: `${item} ${amount.toFixed(2)}/dk`,
+        labelStyle: { fill: '#e2e8f0', fontWeight: 600, fontSize: 11, fontFamily: 'Share Tech Mono, monospace' },
+        labelBgStyle: { fill: '#0a0e1a' },
+        labelBgPadding: [6, 3],
+        labelBgBorderRadius: 4,
       });
     }
   }
@@ -105,15 +141,22 @@ export function buildProductionTree(targetItem, targetAmount, recipes, itemsMap,
   const nodeMap = new Map();
   const edges = [];
   const edgeSet = new Set();
+  const edgeHandleIdx = { source: new Map(), target: new Map() };
 
-  buildGraph(targetItem, targetAmount, null, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet);
+  buildGraph(targetItem, targetAmount, null, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx);
 
   const rootNode = nodeMap.get(targetItem);
   if (rootNode) {
     rootNode.node.type = 'productionRootNode';
   }
 
-  const nodes = Array.from(nodeMap.values()).map(e => e.node);
+  const nodes = Array.from(nodeMap.values()).map(e => {
+    const node = e.node;
+    node.data.inputCount = edgeHandleIdx.target.get(node.id) || 0;
+    node.data.outputCount = edgeHandleIdx.source.get(node.id) || 0;
+    return node;
+  });
+
   return { nodes, edges };
 }
 

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useMemo } from 'react';
 import {
   ReactFlow,
   Background,
@@ -19,9 +19,8 @@ import AddProductionModal from '../modals/AddProductionModal';
 
 import { buildProductionTree, generateTreeId } from '../../engine/recipeEngine';
 import { applyOverrides } from '../../engine/overrideEngine';
-import { applyLayout } from '../../utils/layout';
+import { applyLayout, assignClosestHandles } from '../../utils/layout';
 
-// ReactFlow için node türleri kaydı
 const nodeTypes = {
   textNode: TextNode,
   productionRootNode: ProductionRootNode,
@@ -29,9 +28,6 @@ const nodeTypes = {
   rawNode: RawNode,
 };
 
-/**
- * SatisfactoryCanvas — Ana sonsuz tuval bileşeni.
- */
 export default function SatisfactoryCanvas({ recipesData }) {
   const { recipes = [], items: itemsMap = {} } = recipesData || {};
 
@@ -39,27 +35,20 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
+  const [activeFocus, setActiveFocus] = useState(null);
 
-  // Global override state'i: { [treePrefix]: { [itemName]: value } }
   const overridesRef = useRef({});
-
-  // ReactFlow instance ref
   const rfInstanceRef = useRef(null);
 
-  // ─── Bağlantı yönetimi ─────────────────────────────────────────────────────
   const onConnect = useCallback((params) => {
     setEdges(eds => addEdge({ ...params, type: 'smoothstep', animated: false }, eds));
   }, [setEdges]);
 
-  // ─── Callback ref'leri (stale closure sorununu önlemek için) ───────────────
   const handleDeleteNodeRef = useRef(null);
   const handleOverrideChangeRef = useRef(null);
 
-  // ─── Node silme ─────────────────────────────────────────────────────────────
   const handleDeleteNode = useCallback((nodeId) => {
-    // Ağacın prefix'ini belirle
     const parts = nodeId.split('_');
-    // tree_TIMESTAMP_xxx formatından prefix çıkar: tree_TIMESTAMP
     const prefix = parts.slice(0, 2).join('_');
 
     setNodes(prev => prev.filter(n => !n.id.startsWith(prefix)));
@@ -71,13 +60,10 @@ export default function SatisfactoryCanvas({ recipesData }) {
 
   handleDeleteNodeRef.current = handleDeleteNode;
 
-  // ─── Override değişimi ─────────────────────────────────────────────────────
   const handleOverrideChange = useCallback((nodeId, itemName, value) => {
-    // NodeId'den tree prefix'ini çıkar
     const parts = nodeId.split('_');
     const prefix = parts.slice(0, 2).join('_');
 
-    // Override'ı güncelle
     const treeOverrides = { ...(overridesRef.current[prefix] || {}) };
     if (value === null || value === undefined) {
       delete treeOverrides[itemName];
@@ -86,14 +72,11 @@ export default function SatisfactoryCanvas({ recipesData }) {
     }
     overridesRef.current[prefix] = treeOverrides;
 
-    // Node ve edge'leri güncelle
     setNodes(prevNodes => {
       const treeNodes = prevNodes.filter(n => n.id.startsWith(prefix));
-      const otherNodes = prevNodes.filter(n => !n.id.startsWith(prefix));
 
       if (treeNodes.length === 0) return prevNodes;
 
-      // Edges'i al (fonksiyon içinde doğrudan erişemiyoruz, setEdges kullan)
       setEdges(prevEdges => {
         const treeEdges = prevEdges.filter(e =>
           e.source.startsWith(prefix) || e.target.startsWith(prefix)
@@ -105,7 +88,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
         const { nodes: updatedNodes, edges: updatedEdges } =
           applyOverrides(treeNodes, treeEdges, treeOverrides);
 
-        // Callback'leri yeniden bağla
         const withCallbacks = updatedNodes.map(n => ({
           ...n,
           data: {
@@ -115,7 +97,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
           },
         }));
 
-        // setNodes'u setEdges içinde çağıramayız, setTimeout kullan
         setTimeout(() => {
           setNodes(prev => [
             ...prev.filter(n => !n.id.startsWith(prefix)),
@@ -126,13 +107,12 @@ export default function SatisfactoryCanvas({ recipesData }) {
         return [...otherEdges, ...updatedEdges];
       });
 
-      return prevNodes; // setTimeout ile güncellenecek
+      return prevNodes;
     });
   }, [setNodes, setEdges]);
 
   handleOverrideChangeRef.current = handleOverrideChange;
 
-  // ─── Metin düğümü güncelleme ─────────────────────────────────────────────
   const handleTextNodeChange = useCallback((nodeId, { text, font }) => {
     setNodes(prev => prev.map(n =>
       n.id === nodeId
@@ -141,7 +121,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
     ));
   }, [setNodes]);
 
-  // ─── Metin düğümü ekleme ─────────────────────────────────────────────────
   const handleAddTextNode = useCallback(() => {
     const id = `text_${Date.now()}`;
     const viewport = rfInstanceRef.current?.getViewport() || { x: 0, y: 0, zoom: 1 };
@@ -162,7 +141,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
     setNodes(prev => [...prev, newNode]);
   }, [handleTextNodeChange, setNodes]);
 
-  // ─── Üretim hattı ekleme ─────────────────────────────────────────────────
   const handleAddProduction = useCallback(({ item, targetAmount }) => {
     const treeId = generateTreeId();
     const viewport = rfInstanceRef.current?.getViewport() || { x: 0, y: 0, zoom: 1 };
@@ -183,6 +161,8 @@ export default function SatisfactoryCanvas({ recipesData }) {
       offsetY: centerY,
     });
 
+    const routedEdges = assignClosestHandles(laidOutNodes, treeEdges);
+
     const nodesWithCallbacks = laidOutNodes.map(n => ({
       ...n,
       data: {
@@ -193,10 +173,9 @@ export default function SatisfactoryCanvas({ recipesData }) {
     }));
 
     setNodes(prev => [...prev, ...nodesWithCallbacks]);
-    setEdges(prev => [...prev, ...treeEdges]);
+    setEdges(prev => [...prev, ...routedEdges]);
   }, [recipes, itemsMap, setNodes, setEdges]);
 
-  // ─── Sağ tıklama menüsü ──────────────────────────────────────────────────
   const handlePaneContextMenu = useCallback((event) => {
     event.preventDefault();
     setContextMenu({ x: event.clientX, y: event.clientY });
@@ -204,32 +183,137 @@ export default function SatisfactoryCanvas({ recipesData }) {
 
   const closeContextMenu = useCallback(() => setContextMenu(null), []);
 
-  // ─── Canvas temizle ──────────────────────────────────────────────────────
   const handleClearCanvas = useCallback(() => {
-    if (window.confirm('Tüm canvas temizlensin mi?')) {
+    if (window.confirm('T\u00fcm canvas temizlensin mi?')) {
       setNodes([]);
       setEdges([]);
       overridesRef.current = {};
     }
   }, [setNodes, setEdges]);
 
+  const handleNodeClick = useCallback((_, node) => {
+    setActiveFocus(prev =>
+      prev?.type === 'node' && prev?.id === node.id ? null : { type: 'node', id: node.id }
+    );
+  }, []);
+
+  const handleEdgeClick = useCallback((_, edge) => {
+    setActiveFocus(prev =>
+      prev?.type === 'edge' && prev?.id === edge.id ? null : { type: 'edge', id: edge.id }
+    );
+  }, []);
+
+  const handlePaneClick = useCallback(() => {
+    setActiveFocus(null);
+  }, []);
+
+  const connectedElements = useMemo(() => {
+    if (!activeFocus) return null;
+
+    if (activeFocus.type === 'node') {
+      const connectedEdges = edges.filter(
+        e => e.source === activeFocus.id || e.target === activeFocus.id
+      );
+      const connectedNodeIds = new Set([activeFocus.id]);
+      const connectedEdgeIds = new Set();
+      connectedEdges.forEach(e => {
+        connectedNodeIds.add(e.source);
+        connectedNodeIds.add(e.target);
+        connectedEdgeIds.add(e.id);
+      });
+      return { nodeIds: connectedNodeIds, edgeIds: connectedEdgeIds };
+    }
+
+    if (activeFocus.type === 'edge') {
+      const edge = edges.find(e => e.id === activeFocus.id);
+      if (!edge) return null;
+      return {
+        nodeIds: new Set([edge.source, edge.target]),
+        edgeIds: new Set([activeFocus.id]),
+      };
+    }
+
+    return null;
+  }, [activeFocus, edges]);
+
+  const dimmedNodes = useMemo(() => {
+    if (!connectedElements) return null;
+    const dimmed = {};
+    nodes.forEach(n => {
+      if (!connectedElements.nodeIds.has(n.id)) {
+        dimmed[n.id] = true;
+      }
+    });
+    return dimmed;
+  }, [connectedElements, nodes]);
+
+  const dimmedEdges = useMemo(() => {
+    if (!connectedElements) return null;
+    const dimmed = {};
+    edges.forEach(e => {
+      if (!connectedElements.edgeIds.has(e.id)) {
+        dimmed[e.id] = true;
+      }
+    });
+    return dimmed;
+  }, [connectedElements, edges]);
+
+  const nodesWithDim = useMemo(() => {
+    if (!dimmedNodes) return nodes;
+    return nodes.map(n => {
+      if (dimmedNodes[n.id]) {
+        return { ...n, style: { ...n.style, opacity: 0.2 } };
+      }
+      return { ...n, style: { ...n.style, opacity: 1 } };
+    });
+  }, [nodes, dimmedNodes]);
+
+  const edgesWithDim = useMemo(() => {
+    if (!dimmedEdges) return edges;
+    return edges.map(e => {
+      const baseStyle = e.style || {};
+      if (dimmedEdges[e.id]) {
+        return {
+          ...e,
+          style: { ...baseStyle, opacity: 0.15 },
+          labelStyle: { ...e.labelStyle, opacity: 0.15 },
+        };
+      }
+      if (connectedElements?.edgeIds?.has(e.id)) {
+        return {
+          ...e,
+          style: { ...baseStyle, opacity: 1, strokeWidth: 3 },
+          labelStyle: { ...e.labelStyle, opacity: 1 },
+        };
+      }
+      return {
+        ...e,
+        labelStyle: { ...e.labelStyle, opacity: 1 },
+      };
+    });
+  }, [edges, dimmedEdges, connectedElements]);
+
   return (
     <div style={{ width: '100vw', height: '100vh' }} onClick={closeContextMenu}>
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
+        nodes={nodesWithDim}
+        edges={edgesWithDim}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onInit={instance => { rfInstanceRef.current = instance; }}
         nodeTypes={nodeTypes}
         onPaneContextMenu={handlePaneContextMenu}
+        onNodeClick={handleNodeClick}
+        onEdgeClick={handleEdgeClick}
+        onPaneClick={handlePaneClick}
         fitView={false}
         minZoom={0.1}
         maxZoom={3}
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
         proOptions={{ hideAttribution: true }}
         deleteKeyCode={['Backspace', 'Delete']}
+        defaultEdgeOptions={{ type: 'smoothstep' }}
       >
         <Background
           variant={BackgroundVariant.Dots}
@@ -250,7 +334,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
         />
       </ReactFlow>
 
-      {/* Sağ tıklama menüsü */}
       {contextMenu && (
         <div
           className="context-menu"
@@ -276,7 +359,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
         </div>
       )}
 
-      {/* Üretim hattı ekleme modalı */}
       {showAddModal && (
         <AddProductionModal
           recipes={recipes}
@@ -286,7 +368,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
         />
       )}
 
-      {/* ── Toolbar ── */}
       <div className="toolbar glass-panel">
         <div style={{
           fontSize: 22, marginRight: 4,
@@ -326,7 +407,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
         </button>
       </div>
 
-      {/* ── Boş state ipucu ── */}
       {nodes.length === 0 && (
         <div style={{
           position: 'fixed',

@@ -83,6 +83,8 @@ export function applyOverrides(nodes, edges, userOverrides) {
     const isSatisfied = sourceNode.data.satisfied;
     const isOverflow = sourceNode.data.overflowing;
 
+    const edgeColor = edge.data?.edgeColor || '#4a5a75';
+
     return {
       ...edge,
       animated: isSatisfied || isOverflow,
@@ -95,8 +97,9 @@ export function applyOverrides(nodes, edges, userOverrides) {
       style: {
         stroke: isSatisfied ? '#22c55e'
           : isOverflow ? '#00d4ff'
-          : '#2a3a55',
+          : edgeColor,
         strokeWidth: isSatisfied || isOverflow ? 2.5 : 2,
+        opacity: 0.6,
         filter: isSatisfied
           ? 'drop-shadow(0 0 6px #22c55e)'
           : isOverflow

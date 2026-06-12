@@ -12,6 +12,7 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
     requiredAmount,
     standardAmount,
     onDelete,
+    inputCount,
   } = data;
 
   const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
@@ -88,11 +89,19 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
         )}
       </div>
 
-      <Handle
-        type="target"
-        position={Position.Bottom}
-        style={{ background: 'var(--color-primary)' }}
-      />
+      {Array.from({ length: inputCount || 1 }, (_, i) => {
+        const count = Math.max(1, inputCount);
+        const left = count === 1 ? '50%' : `${10 + (i / (count - 1)) * 80}%`;
+        return (
+          <Handle
+            key={`target-${i}`}
+            type="target"
+            position={Position.Bottom}
+            id={`target-${i}`}
+            style={{ background: 'var(--color-primary)', left }}
+          />
+        );
+      })}
     </div>
   );
 });

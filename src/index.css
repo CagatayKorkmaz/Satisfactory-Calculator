@@ -108,19 +108,35 @@ html, body, #root {
   r: 1.2 !important;
 }
 
+.react-flow__edge {
+  transition: opacity 0.35s ease !important;
+}
+
 .react-flow__edge-path {
-  stroke: var(--color-border-hover) !important;
   stroke-width: 2px !important;
+  transition: opacity 0.35s ease, stroke-width 0.35s ease !important;
+}
+
+.react-flow__edge .react-flow__edge-textwrapper {
+  transition: opacity 0.35s ease !important;
 }
 
 .react-flow__edge.satisfied .react-flow__edge-path {
   stroke: var(--color-success) !important;
-  filter: drop-shadow(0 0 6px var(--color-success));
+  filter: drop-shadow(0 0 6px var(--color-success)) !important;
 }
 
 .react-flow__edge.overflow .react-flow__edge-path {
   stroke: var(--color-accent) !important;
-  filter: drop-shadow(0 0 6px var(--color-accent));
+  filter: drop-shadow(0 0 6px var(--color-accent)) !important;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke-width: 3px !important;
+}
+
+.react-flow__node {
+  transition: opacity 0.35s ease !important;
 }
 
 .react-flow__controls {
@@ -519,13 +535,19 @@ html, body, #root {
   background: var(--color-border-hover) !important;
   border: 2px solid var(--color-surface-2) !important;
   transition: all var(--transition-fast) !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.react-flow__handle[style*="left"] {
+  position: absolute !important;
 }
 
 .react-flow__handle:hover,
 .react-flow__handle.connectingfrom,
 .react-flow__handle.connectingto {
   background: var(--color-primary) !important;
-  transform: scale(1.4) !important;
+  transform: translate(-50%, -50%) scale(1.4) !important;
+  z-index: 10;
 }
 
 /* ============================================================

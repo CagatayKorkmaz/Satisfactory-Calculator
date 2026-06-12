@@ -1,19 +1,15 @@
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
-/**
- * RawNode — Ham kaynak düğümü (Iron Ore, Water vb.)
- * Tarifi olmayan hammaddeleri gösterir. Sarı kenarlık ile vurgulanır.
- */
 const RawNode = memo(({ id, data, selected }) => {
   const {
     itemName,
     icon,
     requiredAmount,
-    standardAmount,
     satisfied,
     overflowing,
     onOverrideChange,
+    outputCount,
   } = data;
 
   const handleOverrideChange = (e) => {
@@ -25,7 +21,7 @@ const RawNode = memo(({ id, data, selected }) => {
   const getStatusColor = () => {
     if (overflowing) return 'var(--color-accent)';
     if (satisfied) return 'var(--color-success)';
-    return 'var(--color-warning)'; // Ham kaynaklar için uyarı rengi
+    return 'var(--color-warning)';
   };
 
   return (
@@ -38,7 +34,6 @@ const RawNode = memo(({ id, data, selected }) => {
         opacity: satisfied ? 0.7 : 1,
       }}
     >
-      {/* Header */}
       <div
         className="node-header"
         style={{
@@ -58,7 +53,6 @@ const RawNode = memo(({ id, data, selected }) => {
         </div>
       </div>
 
-      {/* Body */}
       <div className="node-body">
         <div className="node-amount-row">
           <span className="node-amount-label">Gereken</span>
@@ -70,7 +64,6 @@ const RawNode = memo(({ id, data, selected }) => {
           </span>
         </div>
 
-        {/* Override girişi */}
         <div style={{ marginTop: 8 }}>
           <div className="node-override-label">Elimdeki Miktar (/dk)</div>
           <input
@@ -90,11 +83,19 @@ const RawNode = memo(({ id, data, selected }) => {
         </div>
       </div>
 
-      <Handle
-        type="source"
-        position={Position.Top}
-        style={{ background: getStatusColor() }}
-      />
+      {Array.from({ length: outputCount || 1 }, (_, i) => {
+        const count = Math.max(1, outputCount);
+        const left = count === 1 ? '50%' : `${10 + (i / (count - 1)) * 80}%`;
+        return (
+          <Handle
+            key={`source-${i}`}
+            type="source"
+            position={Position.Top}
+            id={`source-${i}`}
+            style={{ background: getStatusColor(), left }}
+          />
+        );
+      })}
     </div>
   );
 });

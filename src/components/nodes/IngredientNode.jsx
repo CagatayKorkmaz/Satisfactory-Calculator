@@ -1,11 +1,6 @@
 import { memo, useState, useCallback } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
-/**
- * IngredientNode — Ara bileşen düğümü.
- * "Elimdeki Mevcut Miktar" override giriş alanı içerir.
- * Satisfied/overflow durumlarında renk kodlanır.
- */
 const IngredientNode = memo(({ id, data, selected }) => {
   const {
     itemName,
@@ -21,6 +16,8 @@ const IngredientNode = memo(({ id, data, selected }) => {
     overflowing,
     onOverrideChange,
     onDelete,
+    inputCount,
+    outputCount,
   } = data;
 
   const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
@@ -63,14 +60,12 @@ const IngredientNode = memo(({ id, data, selected }) => {
         borderLeft: `3px solid ${getStatusColor()}`,
       }}
     >
-      {/* Sil butonu */}
       {onDelete && (
         <button className="node-delete-btn" onClick={() => onDelete(id)} title="Sil">
           ✕
         </button>
       )}
 
-      {/* Header */}
       <div className="node-header">
         {icon.startsWith('/')
           ? <img className="node-icon" src={icon} alt={itemName} />
@@ -79,7 +74,7 @@ const IngredientNode = memo(({ id, data, selected }) => {
           <div className="node-title" style={{ fontSize: 15, fontWeight: 700 }}>{itemName}</div>
           {machine && (
             <div className="node-machine" style={{ fontSize: 14, fontWeight: 700 }}>
-              {machine} × {machineCount > 0 ? machineCount : '\u2014'}
+              {machine} × {machineCount > 0 ? machineCount : '—'}
             </div>
           )}
           {machine && hasUnderclock && (
@@ -95,9 +90,7 @@ const IngredientNode = memo(({ id, data, selected }) => {
         )}
       </div>
 
-      {/* Body */}
       <div className="node-body">
-        {/* Standart miktar */}
         <div className="node-amount-row">
           <span className="node-amount-label">Standart İhtiyaç</span>
           <span className="node-amount-value">
@@ -105,7 +98,6 @@ const IngredientNode = memo(({ id, data, selected }) => {
           </span>
         </div>
 
-        {/* Kalan ihtiyaç (override varsa) */}
         {userOverride !== null && userOverride !== undefined && (
           <div className="node-amount-row">
             <span className="node-amount-label">Kalan İhtiyaç</span>
@@ -118,7 +110,6 @@ const IngredientNode = memo(({ id, data, selected }) => {
           </div>
         )}
 
-        {/* Override girişi */}
         <div style={{ marginTop: 8 }}>
           <div className="node-override-label">Elimdeki Miktar (/dk)</div>
           <input
@@ -140,17 +131,33 @@ const IngredientNode = memo(({ id, data, selected }) => {
         </div>
       </div>
 
-      {/* Connection handles */}
-      <Handle
-        type="source"
-        position={Position.Top}
-        style={{ background: getStatusColor() }}
-      />
-      <Handle
-        type="target"
-        position={Position.Bottom}
-        style={{ background: getStatusColor() }}
-      />
+      {Array.from({ length: outputCount || 1 }, (_, i) => {
+        const count = Math.max(1, outputCount);
+        const left = count === 1 ? '50%' : `${10 + (i / (count - 1)) * 80}%`;
+        return (
+          <Handle
+            key={`source-${i}`}
+            type="source"
+            position={Position.Top}
+            id={`source-${i}`}
+            style={{ background: getStatusColor(), left }}
+          />
+        );
+      })}
+
+      {Array.from({ length: inputCount || 1 }, (_, i) => {
+        const count = Math.max(1, inputCount);
+        const left = count === 1 ? '50%' : `${10 + (i / (count - 1)) * 80}%`;
+        return (
+          <Handle
+            key={`target-${i}`}
+            type="target"
+            position={Position.Bottom}
+            id={`target-${i}`}
+            style={{ background: getStatusColor(), left }}
+          />
+        );
+      })}
     </div>
   );
 });
