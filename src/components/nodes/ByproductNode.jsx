@@ -47,7 +47,7 @@ const ByproductNode = memo(({ id, data, selected }) => {
         type="target"
         position={Position.Bottom}
         id="target-0"
-        style={{ background: '#c084fc' }}
+        style={{ background: '#c084fc', bottom: -4 }}
       />
     </div>
   );

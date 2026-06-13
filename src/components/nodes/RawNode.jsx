@@ -86,7 +86,7 @@ const RawNode = memo(({ id, data, selected }) => {
             type="source"
             position={Position.Top}
             id={`source-${i}`}
-            style={{ background: getStatusColor(), left }}
+            style={{ background: getStatusColor(), left, top: -4 }}
           />
         );
       })}

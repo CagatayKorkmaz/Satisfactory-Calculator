@@ -130,7 +130,7 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
             type="source"
             position={Position.Top}
             id={`byproduct-source-${i}`}
-            style={{ background: '#c084fc', left }}
+            style={{ background: '#c084fc', left, top: -4 }}
           />
         );
       })}
@@ -144,7 +144,7 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
             type="target"
             position={Position.Bottom}
             id={`target-${i}`}
-            style={{ background: 'var(--color-primary)', left }}
+            style={{ background: 'var(--color-primary)', left, bottom: -4 }}
           />
         );
       })}

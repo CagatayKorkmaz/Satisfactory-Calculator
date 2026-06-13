@@ -135,33 +135,38 @@ const IngredientNode = memo(({ id, data, selected }) => {
         </div>
       </div>
 
-      {Array.from({ length: outputCount || 1 }, (_, i) => {
-        const count = Math.max(1, outputCount);
-        const left = count === 1 ? '50%' : `${10 + (i / (count - 1)) * 80}%`;
+      {(() => {
+        const totalTopCount = Math.max(1, (outputCount || 1) + byproductCount);
         return (
-          <Handle
-            key={`source-${i}`}
-            type="source"
-            position={Position.Top}
-            id={`source-${i}`}
-            style={{ background: getStatusColor(), left }}
-          />
+          <>
+            {Array.from({ length: outputCount || 1 }, (_, i) => {
+              const left = totalTopCount === 1 ? '50%' : `${10 + (i / (totalTopCount - 1)) * 80}%`;
+              return (
+                <Handle
+                  key={`source-${i}`}
+                  type="source"
+                  position={Position.Top}
+                  id={`source-${i}`}
+                  style={{ background: getStatusColor(), left, top: -4 }}
+                />
+              );
+            })}
+            {hasByproducts && Array.from({ length: byproductCount }, (_, i) => {
+              const idx = (outputCount || 1) + i;
+              const left = totalTopCount === 1 ? '50%' : `${10 + (idx / (totalTopCount - 1)) * 80}%`;
+              return (
+                <Handle
+                  key={`byproduct-source-${i}`}
+                  type="source"
+                  position={Position.Top}
+                  id={`byproduct-source-${i}`}
+                  style={{ background: '#c084fc', left, top: -4 }}
+                />
+              );
+            })}
+          </>
         );
-      })}
-
-      {hasByproducts && Array.from({ length: byproductCount }, (_, i) => {
-        const count = Math.max(1, byproductCount);
-        const left = count === 1 ? '50%' : `${10 + (i / (count - 1)) * 80}%`;
-        return (
-          <Handle
-            key={`byproduct-source-${i}`}
-            type="source"
-            position={Position.Top}
-            id={`byproduct-source-${i}`}
-            style={{ background: '#c084fc', left }}
-          />
-        );
-      })}
+      })()}
 
       {Array.from({ length: inputCount || 1 }, (_, i) => {
         const count = Math.max(1, inputCount);
@@ -172,7 +177,7 @@ const IngredientNode = memo(({ id, data, selected }) => {
             type="target"
             position={Position.Bottom}
             id={`target-${i}`}
-            style={{ background: getStatusColor(), left }}
+            style={{ background: getStatusColor(), left, bottom: -4 }}
           />
         );
       })}
