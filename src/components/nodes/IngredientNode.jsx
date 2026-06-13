@@ -117,9 +117,9 @@ const IngredientNode = memo(({ id, data, selected }) => {
               onClick={e => e.stopPropagation()}
               onMouseDown={e => e.stopPropagation()}
             >
-              {availableRecipes.map(r => (
+              {[...availableRecipes].sort((a, b) => a.isAlternate - b.isAlternate).map(r => (
                 <option key={r.recipeName} value={r.recipeName}>
-                  {r.isAlternate ? '✦ ' : ''}{r.recipeName}
+                  {r.isAlternate ? '(Alt) ' : ''}{r.recipeName}
                 </option>
               ))}
             </select>
