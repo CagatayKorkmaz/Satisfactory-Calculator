@@ -12,6 +12,16 @@
 }
 
 /* ============================================================
+   Lazy Dog (local)
+   ============================================================ */
+@font-face {
+  font-family: 'Lazy Dog';
+  src: url('/fonts/LazyDog.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ============================================================
    Design Tokens — Satisfactory Dark Theme
    ============================================================ */
 :root {
@@ -43,6 +53,7 @@
   --font-ui: 'Inter', system-ui, sans-serif;
   --font-handwritten: 'Caveat', cursive;
   --font-excali: 'Excalifont', 'Caveat', cursive;
+  --font-lazy: 'Lazy Dog', cursive;
   --font-mono: 'Share Tech Mono', monospace;
 
   --radius-sm: 6px;
@@ -297,6 +308,181 @@ html, body, #root {
   width: 1px;
   height: 24px;
   background: var(--color-border);
+}
+
+/* ============================================================
+   Note Formatting Bar
+   ============================================================ */
+.note-formatting-bar {
+  position: fixed;
+  top: 95px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  animation: fadeIn 150ms ease;
+}
+
+.fmt-select {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  padding: 4px 8px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.fmt-select:hover,
+.fmt-select:focus {
+  border-color: var(--color-primary);
+}
+
+.fmt-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-dim);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  min-width: 28px;
+  height: 28px;
+}
+
+.fmt-btn:hover {
+  background: var(--color-surface-3);
+  color: var(--color-text);
+  border-color: var(--color-border-hover);
+}
+
+.fmt-btn.active {
+  background: var(--color-primary-glow);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.fmt-btn-danger {
+  color: var(--color-error);
+}
+
+.fmt-btn-danger:hover {
+  background: var(--color-error-glow);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.fmt-btn-delete {
+  color: var(--color-error);
+  font-size: 14px;
+}
+
+.fmt-btn-delete:hover {
+  background: var(--color-error-glow);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.fmt-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+.fmt-color-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: transform var(--transition-fast), outline var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.fmt-color-btn:hover {
+  transform: scale(1.2);
+}
+
+.fmt-image-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-node-hover);
+  width: 220px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  animation: fadeIn 150ms ease;
+}
+
+.fmt-search-input {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--color-surface);
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  outline: none;
+}
+
+.fmt-search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.fmt-image-list {
+  overflow-y: auto;
+  flex: 1;
+  max-height: 240px;
+}
+
+.fmt-image-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  font-size: 12px;
+  color: var(--color-text-dim);
+}
+
+.fmt-image-item:hover {
+  background: var(--color-surface-3);
+  color: var(--color-text);
+}
+
+.fmt-image-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.fmt-image-empty {
+  padding: 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 12px;
 }
 
 /* ============================================================
@@ -833,24 +1019,19 @@ html, body, #root {
 .text-node-wrapper {
   position: relative;
   background: transparent;
-  border: 1.5px dashed var(--color-border);
+  border: none;
   border-radius: var(--radius-md);
   min-width: 120px;
   min-height: 40px;
+  width: fit-content;
   transition: border-color var(--transition-fast);
 }
 
-.text-node-wrapper:hover {
-  border-color: var(--color-border-hover);
-}
-
 .text-node-wrapper.selected {
-  border-color: var(--color-primary);
-  border-style: solid;
+  border: 1.5px dashed var(--color-border-hover);
 }
 
 .text-node-content {
-  padding: 8px 12px;
   font-size: 16px;
   color: var(--color-text);
   line-height: 1.4;

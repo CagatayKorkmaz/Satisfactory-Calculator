@@ -18,6 +18,7 @@ import RawNode from '../nodes/RawNode';
 import ByproductNode from '../nodes/ByproductNode';
 import AddProductionModal from '../modals/AddProductionModal';
 import EditProductionModal from '../modals/EditProductionModal';
+import NoteFormattingBar from './NoteFormattingBar';
 
 import { buildProductionTree, generateTreeId } from '../../engine/recipeEngine';
 import { applyOverrides } from '../../engine/overrideEngine';
@@ -160,10 +161,18 @@ export default function SatisfactoryCanvas({ recipesData }) {
 
   handleOverrideChangeRef.current = handleOverrideChange;
 
-  const handleTextNodeChange = useCallback((nodeId, { text, font }) => {
+  const handleTextNodeChange = useCallback((nodeId, updates) => {
     setNodes(prev => prev.map(n =>
       n.id === nodeId
-        ? { ...n, data: { ...n.data, text, font } }
+        ? { ...n, data: { ...n.data, ...updates } }
+        : n
+    ));
+  }, [setNodes]);
+
+  const handleFormattingUpdate = useCallback((nodeId, updates) => {
+    setNodes(prev => prev.map(n =>
+      n.id === nodeId
+        ? { ...n, data: { ...n.data, ...updates } }
         : n
     ));
   }, [setNodes]);
@@ -181,6 +190,12 @@ export default function SatisfactoryCanvas({ recipesData }) {
       data: {
         text: 'Not ekle...',
         font: 'Excalifont',
+        size: 'M',
+        color: '#e2e8f0',
+        align: 'left',
+        opacity: 1,
+        imageUrl: null,
+        imagePosition: 'top',
         onChange: handleTextNodeChange,
         onDelete: handleDeleteNodeRef.current,
       },
@@ -248,7 +263,12 @@ export default function SatisfactoryCanvas({ recipesData }) {
     setActiveFocus(prev =>
       prev?.type === 'node' && prev?.id === node.id ? null : { type: 'node', id: node.id }
     );
-  }, []);
+    if (node.type === 'textNode') {
+      setNodes(nds => nds.map(n =>
+        n.id === node.id ? { ...n, data: { ...n.data, _editing: true, _editAt: Date.now() } } : n
+      ));
+    }
+  }, [setNodes]);
 
   const handleEdgeClick = useCallback((_, edge) => {
     setActiveFocus(prev =>
@@ -437,6 +457,11 @@ export default function SatisfactoryCanvas({ recipesData }) {
       return n;
     });
   }, [nodesWithDim, dimmedNodes]);
+
+  const selectedNoteNode = useMemo(() => {
+    const selected = nodes.find(n => n.selected && n.type === 'textNode');
+    return selected || null;
+  }, [nodes]);
 
   const edgesWithEstablishedDim = useMemo(() => {
     return edgesWithDim.map(e => {
@@ -668,6 +693,16 @@ export default function SatisfactoryCanvas({ recipesData }) {
           🗑️ Temizle
         </button>
       </div>
+
+      {selectedNoteNode && (
+        <NoteFormattingBar
+          nodeId={selectedNoteNode.id}
+          nodeData={selectedNoteNode.data}
+          itemsMap={itemsMap}
+          onUpdate={handleFormattingUpdate}
+          onDelete={handleDeleteNodeRef.current}
+        />
+      )}
 
       {nodes.length === 0 && (
         <div style={{
