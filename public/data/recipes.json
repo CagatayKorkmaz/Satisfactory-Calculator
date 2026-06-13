@@ -319,7 +319,27 @@
                                                     "icon":  "/images/items/Thermal_Propulsion_Rocket.png",
                                                     "category":  "component",
                                                     "name":  "Thermal Propulsion Rocket"
-                                                }
+                                                },
+                  "Compacted Coal":  {
+                                         "icon":  "/images/items/Compacted_Coal.png",
+                                         "category":  "part",
+                                         "name":  "Compacted Coal"
+                                     },
+                  "Turbofuel":  {
+                                    "icon":  "/images/items/Turbofuel.png",
+                                    "category":  "fluid",
+                                    "name":  "Turbofuel"
+                                },
+                  "Petroleum Coke":  {
+                                         "icon":  "/images/items/Petroleum_Coke.png",
+                                         "category":  "part",
+                                         "name":  "Petroleum Coke"
+                                     },
+                  "Empty Canister":  {
+                                         "icon":  "/images/items/Empty_Canister.png",
+                                         "category":  "part",
+                                         "name":  "Empty Canister"
+                                     }
               },
     "recipes":  [
                     {
@@ -1157,6 +1177,62 @@
                         "id":  "thermal_propulsion_rocket",
                         "item":  "Thermal Propulsion Rocket",
                         "machine":  "Manufacturer"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Coal",
+                                                "amount_per_min":  25
+                                            },
+                                            {
+                                                "item":  "Sulfur",
+                                                "amount_per_min":  25
+                                            }
+                                        ],
+                        "output_per_min":  25,
+                        "id":  "compacted_coal",
+                        "item":  "Compacted Coal",
+                        "machine":  "Assembler"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Fuel",
+                                                "amount_per_min":  22.5
+                                            },
+                                            {
+                                                "item":  "Compacted Coal",
+                                                "amount_per_min":  15
+                                            }
+                                        ],
+                        "output_per_min":  18.75,
+                        "id":  "turbofuel",
+                        "item":  "Turbofuel",
+                        "machine":  "Refinery"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Heavy Oil Residue",
+                                                "amount_per_min":  40
+                                            }
+                                        ],
+                        "output_per_min":  120,
+                        "id":  "petroleum_coke",
+                        "item":  "Petroleum Coke",
+                        "machine":  "Refinery"
+                    },
+                    {
+                        "ingredients":  [
+                                            {
+                                                "item":  "Plastic",
+                                                "amount_per_min":  30
+                                            }
+                                        ],
+                        "output_per_min":  60,
+                        "id":  "empty_canister",
+                        "item":  "Empty Canister",
+                        "machine":  "Constructor"
                     }
                 ]
 }
