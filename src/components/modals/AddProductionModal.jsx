@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
+import { isAlternateRecipe } from '../../engine/recipeEngine';
 
 /**
  * AddProductionModal — Üretim hattı ekleme modalı.
@@ -10,11 +11,11 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
   const [targetAmount, setTargetAmount] = useState(1);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  // Sadece tarifi olan ürünleri göster (ham kaynaklar hariç)
+  // Sadece ana tarifleri göster (alternatifler hariç)
   const filteredRecipes = useMemo(() => {
     const q = search.toLowerCase();
     return recipes.filter(r =>
-      r.item.toLowerCase().includes(q)
+      !isAlternateRecipe(r) && r.item.toLowerCase().includes(q)
     );
   }, [recipes, search]);
 

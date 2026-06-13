@@ -245,8 +245,6 @@ html, body, #root {
    Recipe Dropdown
    ============================================================ */
 .node-recipe-select {
-  border-top: 1px solid var(--color-border);
-  margin-top: 2px;
 }
 
 .recipe-dropdown {
@@ -948,7 +946,6 @@ html, body, #root {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
 }
 
 .node-amount-label {
