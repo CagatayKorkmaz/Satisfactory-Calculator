@@ -11,12 +11,18 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
   const [targetAmount, setTargetAmount] = useState(1);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  // Sadece ana tarifleri göster (alternatifler hariç)
+  // Her ürünü tek göster (alternatifler ve unpackage tarifleri hariç)
   const filteredRecipes = useMemo(() => {
     const q = search.toLowerCase();
-    return recipes.filter(r =>
-      !isAlternateRecipe(r) && r.item.toLowerCase().includes(q)
-    );
+    const seen = new Set();
+    return recipes.filter(r => {
+      if (isAlternateRecipe(r)) return false;
+      if (r.id.startsWith('unpackage')) return false;
+      if (!r.item.toLowerCase().includes(q)) return false;
+      if (seen.has(r.item)) return false;
+      seen.add(r.item);
+      return true;
+    });
   }, [recipes, search]);
 
   // Arama sonuçları değişince ilk sonucu pre-select yap

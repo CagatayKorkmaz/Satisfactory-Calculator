@@ -25,7 +25,15 @@ export default function EditProductionModal({
 
   const filteredRecipes = useMemo(() => {
     const q = search.toLowerCase();
-    return recipes.filter(r => !isAlternateRecipe(r) && r.item.toLowerCase().includes(q));
+    const seen = new Set();
+    return recipes.filter(r => {
+      if (isAlternateRecipe(r)) return false;
+      if (r.id.startsWith('unpackage')) return false;
+      if (!r.item.toLowerCase().includes(q)) return false;
+      if (seen.has(r.item)) return false;
+      seen.add(r.item);
+      return true;
+    });
   }, [recipes, search]);
 
   useEffect(() => {

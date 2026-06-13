@@ -88,6 +88,12 @@ const ALT_RECIPE_NAMES = {
   'alt_silica': 'Silica (Alt)',
   'alt_purequartzcrystal': 'Pure Quartz Crystal',
   'alt_dilutedpackagedfuel': 'Diluted Packaged Fuel',
+  // Variant recipes (non-alt, but different from primary)
+  'residualrubber': 'Residual Rubber',
+  'residualplastic': 'Residual Plastic',
+  'residualfuel': 'Residual Fuel',
+  'unpackagefuel': 'Unpackage Fuel',
+  'unpackagenitricacid': 'Unpackage Nitric Acid',
 };
 
 function getEdgeColor(category) {
