@@ -26,9 +26,11 @@ const IngredientNode = memo(({ id, data, selected }) => {
   const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
   const hasByproducts = byproductCount > 0;
 
-  const formatAmount = (value) => (
-    value != null && value % 1 === 0 ? value.toString() : value?.toFixed(2)
-  );
+  const formatAmount = (value) => {
+    if (value == null) return '';
+    if (value % 1 === 0) return value.toString();
+    return value.toFixed(3).replace(/\.?0+$/, '');
+  };
 
   const handleToggleEstablished = useCallback((e) => {
     e.stopPropagation();

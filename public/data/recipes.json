@@ -1096,7 +1096,7 @@
         },
         {
           "item": "High-Speed Connector",
-          "amount_per_min": 1.88
+          "amount_per_min": 1.875
         }
       ]
     },
@@ -1537,7 +1537,7 @@
     {
       "id": "alt_computer_2",
       "item": "Computer",
-      "output_per_min": 2.81,
+      "output_per_min": 2.8125,
       "machine": "Assembler",
       "ingredients": [
         {
@@ -1546,7 +1546,7 @@
         },
         {
           "item": "Crystal Oscillator",
-          "amount_per_min": 2.81
+          "amount_per_min": 2.8125
         }
       ]
     },
@@ -1662,11 +1662,11 @@
       "ingredients": [
         {
           "item": "Heat Sink",
-          "amount_per_min": 9.38
+          "amount_per_min": 9.375
         },
         {
           "item": "Motor",
-          "amount_per_min": 1.88
+          "amount_per_min": 1.875
         },
         {
           "item": "Nitrogen Gas",
@@ -1799,7 +1799,7 @@
     {
       "id": "alt_crystaloscillator",
       "item": "Crystal Oscillator",
-      "output_per_min": 1.88,
+      "output_per_min": 1.875,
       "machine": "Manufacturer",
       "ingredients": [
         {
@@ -1808,11 +1808,11 @@
         },
         {
           "item": "Rubber",
-          "amount_per_min": 13.13
+          "amount_per_min": 13.125
         },
         {
           "item": "AI Limiter",
-          "amount_per_min": 1.88
+          "amount_per_min": 1.875
         }
       ]
     },
@@ -2293,7 +2293,7 @@
     {
       "id": "alt_modularframeheavy",
       "item": "Heavy Modular Frame",
-      "output_per_min": 2.81,
+      "output_per_min": 2.8125,
       "machine": "Manufacturer",
       "ingredients": [
         {
@@ -2302,7 +2302,7 @@
         },
         {
           "item": "Encased Industrial Beam",
-          "amount_per_min": 9.38
+          "amount_per_min": 9.375
         },
         {
           "item": "Steel Pipe",
@@ -2310,7 +2310,7 @@
         },
         {
           "item": "Concrete",
-          "amount_per_min": 20.63
+          "amount_per_min": 20.625
         }
       ]
     },
@@ -3439,7 +3439,7 @@
     {
       "id": "alt_reinforcedironplate_2",
       "item": "Reinforced Iron Plate",
-      "output_per_min": 5.63,
+      "output_per_min": 5.625,
       "machine": "Assembler",
       "ingredients": [
         {
@@ -3939,7 +3939,7 @@
     {
       "id": "computersuper",
       "item": "Supercomputer",
-      "output_per_min": 1.88,
+      "output_per_min": 1.875,
       "machine": "Manufacturer",
       "ingredients": [
         {
@@ -3952,7 +3952,7 @@
         },
         {
           "item": "High-Speed Connector",
-          "amount_per_min": 5.63
+          "amount_per_min": 5.625
         },
         {
           "item": "Plastic",
@@ -4012,7 +4012,7 @@
         },
         {
           "item": "Pressure Conversion Cube",
-          "amount_per_min": 1.88
+          "amount_per_min": 1.875
         },
         {
           "item": "Packaged Nitrogen Gas",
@@ -4027,31 +4027,31 @@
     {
       "id": "alt_turbomotor_1",
       "item": "Turbo Motor",
-      "output_per_min": 2.81,
+      "output_per_min": 2.8125,
       "machine": "Manufacturer",
       "ingredients": [
         {
           "item": "Motor",
-          "amount_per_min": 6.56
+          "amount_per_min": 6.5625
         },
         {
           "item": "Radio Control Unit",
-          "amount_per_min": 8.44
+          "amount_per_min": 8.4375
         },
         {
           "item": "Electromagnetic Control Rod",
-          "amount_per_min": 4.69
+          "amount_per_min": 4.6875
         },
         {
           "item": "Rotor",
-          "amount_per_min": 6.56
+          "amount_per_min": 6.5625
         }
       ]
     },
     {
       "id": "motorturbo",
       "item": "Turbo Motor",
-      "output_per_min": 1.88,
+      "output_per_min": 1.875,
       "machine": "Manufacturer",
       "ingredients": [
         {

@@ -4,9 +4,11 @@ import { Handle, Position } from '@xyflow/react';
 const ByproductNode = memo(({ id, data, selected }) => {
   const { itemName, icon, standardAmount, onDelete } = data;
 
-  const formatAmount = (value) => (
-    value != null && value % 1 === 0 ? value.toString() : value?.toFixed(2)
-  );
+  const formatAmount = (value) => {
+    if (value == null) return '';
+    if (value % 1 === 0) return value.toString();
+    return value.toFixed(3).replace(/\.?0+$/, '');
+  };
 
   return (
     <div

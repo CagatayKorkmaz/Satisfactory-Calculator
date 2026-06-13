@@ -652,7 +652,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
                   nodeId: nodeContextMenu.nodeId,
                   itemName: nodeContextMenu.itemName,
                   requiredAmount: nodeContextMenu.requiredAmount,
-                  currentNodeLabel: `${nodeContextMenu.itemName} (${nodeContextMenu.requiredAmount?.toFixed(2)}/dk)`,
+                  currentNodeLabel: `${nodeContextMenu.itemName} (${nodeContextMenu.requiredAmount?.toFixed(3).replace(/\.?0+$/, '')}/dk)`,
                 });
               }}
             >

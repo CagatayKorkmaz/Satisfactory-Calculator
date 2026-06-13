@@ -64,7 +64,7 @@ const RawNode = memo(({ id, data, selected }) => {
             className="node-amount-value"
             style={{ color: satisfied ? 'var(--color-success)' : 'var(--color-warning)' }}
           >
-            {requiredAmount != null && requiredAmount % 1 === 0 ? requiredAmount.toString() : requiredAmount?.toFixed(2)}/dk
+            {requiredAmount != null && requiredAmount % 1 === 0 ? requiredAmount.toString() : requiredAmount?.toFixed(3).replace(/\.?0+$/, '')}/dk
           </span>
         </div>
 

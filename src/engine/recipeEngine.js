@@ -125,7 +125,9 @@ export function findRecipe(itemName, recipes, selectedRecipeName) {
     const found = recipesForItem.find(r => getRecipeDisplayName(r) === selectedRecipeName);
     if (found) return found;
   }
-  return recipesForItem.find(r => !isAlternateRecipe(r)) || recipesForItem[0];
+  const realRecipes = recipesForItem.filter(r => !isAlternateRecipe(r) && !r.id.startsWith('unpackage'));
+  if (realRecipes.length > 0) return realRecipes[0];
+  return null;
 }
 
 function getRecipeItem(recipe) {
@@ -305,7 +307,7 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
               data: { flowRate: byproduct.amount, category: byproduct.category, isByproduct: true, edgeColor: bpEdgeColor },
               style: { stroke: bpEdgeColor, strokeWidth: 2, opacity: 0.6 },
               markerEnd: { type: 'arrowclosed', width: 14, height: 14, color: bpEdgeColor },
-              label: `${byproduct.item} ${byproduct.amount % 1 === 0 ? byproduct.amount.toString() : byproduct.amount.toFixed(2)}/dk`,
+              label: `${byproduct.item} ${byproduct.amount % 1 === 0 ? byproduct.amount.toString() : byproduct.amount.toFixed(3).replace(/\.?0+$/, '')}/dk`,
               labelStyle: { fill: '#e2e8f0', fontWeight: 600, fontSize: 13, fontFamily: 'Share Tech Mono, monospace' },
               labelBgStyle: { fill: '#0a0e1a' },
               labelBgPadding: [6, 3],
@@ -342,7 +344,7 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
         data: { satisfied: false, overflow: false, flowRate: amount, category, edgeColor },
         style: { stroke: edgeColor, strokeWidth: 2, opacity: 0.6 },
         markerEnd: { type: 'arrowclosed', width: 14, height: 14, color: edgeColor },
-        label: `${item} ${amount % 1 === 0 ? amount.toString() : amount.toFixed(2)}/dk`,
+        label: `${item} ${amount % 1 === 0 ? amount.toString() : amount.toFixed(3).replace(/\.?0+$/, '')}/dk`,
         labelStyle: { fill: '#e2e8f0', fontWeight: 600, fontSize: 13, fontFamily: 'Share Tech Mono, monospace' },
         labelBgStyle: { fill: '#0a0e1a' },
         labelBgPadding: [6, 3],
