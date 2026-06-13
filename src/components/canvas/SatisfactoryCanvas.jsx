@@ -23,6 +23,7 @@ import NoteFormattingBar from './NoteFormattingBar';
 import { buildProductionTree, generateTreeId } from '../../engine/recipeEngine';
 import { applyOverrides } from '../../engine/overrideEngine';
 import { applyLayout, assignClosestHandles } from '../../utils/layout';
+import { saveToStorage, loadFromStorage, clearStorage } from '../../utils/storage';
 
 const nodeTypes = {
   textNode: TextNode,
@@ -35,8 +36,11 @@ const nodeTypes = {
 export default function SatisfactoryCanvas({ recipesData }) {
   const { recipes = [], items: itemsMap = {} } = recipesData || {};
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const saved = loadFromStorage();
+  const hasSaved = saved?.nodes?.length;
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(hasSaved ? saved.nodes : []);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(hasSaved ? saved.edges : []);
   const [showAddModal, setShowAddModal] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
   const [nodeContextMenu, setNodeContextMenu] = useState(null);
@@ -44,14 +48,28 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const [isBulkMode, setIsBulkMode] = useState(false);
   const [activeFocus, setActiveFocus] = useState(null);
 
-  const overridesRef = useRef({});
-  const selectedRecipesRef = useRef({});
+  const overridesRef = useRef(hasSaved ? saved.overrides || {} : {});
+  const selectedRecipesRef = useRef(hasSaved ? saved.selectedRecipes || {} : {});
   const rfInstanceRef = useRef(null);
   const nodesRef = useRef([]);
   const edgesRef = useRef([]);
+  const [saveStatus, setSaveStatus] = useState(hasSaved ? 'Yüklendi' : '');
 
-  useEffect(() => { nodesRef.current = nodes; }, [nodes]);
-  useEffect(() => { edgesRef.current = edges; }, [edges]);
+  const saveTimeoutRef = useRef(null);
+  useEffect(() => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      saveToStorage({
+        nodes,
+        edges,
+        overrides: overridesRef.current,
+        selectedRecipes: selectedRecipesRef.current,
+      });
+      setSaveStatus('Kaydedildi');
+      setTimeout(() => setSaveStatus(''), 2000);
+    }, 1000);
+    return () => { if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current); };
+  }, [nodes, edges]);
 
   useEffect(() => {
     if (!isBulkMode) return;
@@ -330,6 +348,9 @@ export default function SatisfactoryCanvas({ recipesData }) {
       setEdges([]);
       overridesRef.current = {};
       selectedRecipesRef.current = {};
+      clearStorage();
+      setSaveStatus('Temizlendi');
+      setTimeout(() => setSaveStatus(''), 2000);
     }
   }, [setNodes, setEdges]);
 
@@ -740,6 +761,14 @@ export default function SatisfactoryCanvas({ recipesData }) {
         }}>
           Satisfactory
         </span>
+        {saveStatus && (
+          <span style={{
+            fontSize: 11, color: 'var(--color-text-muted)',
+            marginRight: 8, whiteSpace: 'nowrap',
+          }}>
+            {saveStatus}
+          </span>
+        )}
         <div className="toolbar-divider" />
         <button
           id="btn-add-production"
