@@ -6,12 +6,120 @@ const CATEGORY_COLORS = {
   fluid: '#0284c7',
 };
 
+const ALT_RECIPE_NAMES = {
+  'alt_screw': 'Cast Screw',
+  'alt_screw_2': 'Steel Screw',
+  'alt_pureironingot': 'Pure Iron Ingot',
+  'alt_ingotiron': 'Alloyed Iron Ingot',
+  'alt_steelcoatedplate': 'Steel Coated Plate',
+  'alt_coatedironplate': 'Coated Iron Plate',
+  'alt_steelrod': 'Steel Rod',
+  'alt_purecopperingot': 'Pure Copper Ingot',
+  'alt_copperalloyingot': 'Copper Alloy Ingot',
+  'alt_steamedcoppersheet': 'Steamed Copper Sheet',
+  'alt_cokesteelingot': 'Coke Steel Ingot',
+  'alt_ingotsteel_1': 'Solid Steel Ingot',
+  'alt_ingotsteel_2': 'Molded Steel Ingot',
+  'alt_quickwire': 'Quickwire (Alt)',
+  'alt_wire_1': 'Fused Wire',
+  'alt_wire_2': 'Steamed Wire',
+  'alt_fusedwire': 'Fused Wire (Alt)',
+  'alt_reinforcedironplate_1': 'Stitched Iron Plate',
+  'alt_reinforcedironplate_2': 'Bolted Iron Plate',
+  'alt_adheredironplate': 'Adhered Iron Plate',
+  'alt_rotor': 'Rotor (Alt)',
+  'alt_copperrotor': 'Copper Rotor',
+  'alt_stator': 'Quickwire Stator',
+  'alt_motor_1': 'Electric Motor (Alt)',
+  'alt_electricmotor': 'Electric Motor',
+  'alt_modularframe': 'Bolted Frame',
+  'alt_boltedframe': 'Steeled Frame',
+  'alt_heavyflexibleframe': 'Flexible Frame',
+  'alt_encasedindustrialbeam': 'Encased Industrial Beam',
+  'alt_heatfusedframe': 'Heat-Fused Frame',
+  'alt_plastic_1': 'Recycled Plastic',
+  'alt_wetconcrete': 'Wet Concrete',
+  'alt_rubberconcrete': 'Rubber Concrete',
+  'alt_concrete': 'Fine Concrete',
+  'alt_polymerresin': 'Polymer Resin (Alt)',
+  'alt_dilutedfuel': 'Diluted Fuel',
+  'alt_turbofuel': 'Turbo Fuel (Alt)',
+  'alt_turboblendfuel': 'Turbo Blend Fuel',
+  'alt_turboheavyfuel': 'Turbo Heavy Fuel',
+  'alt_heavyoilresidue': 'Heavy Oil Residue',
+  'alt_sloppyalumina': 'Sloppy Alumina',
+  'alt_alcladcasing': 'Alclad Casing',
+  'alt_electroaluminumscrap': 'Electro-Aluminum Scrap',
+  'alt_instantscrap': 'Instant Scrap',
+  'alt_classicbattery': 'Classic Battery',
+  'alt_beacon_1': 'Beacon (Alt)',
+  'alt_gunpowder_1': 'Gunpowder (Alt)',
+  'alt_coatedcable': 'Coated Cable',
+  'alt_cable_1': 'Cable (Insulated)',
+  'alt_cable_2': 'Cable (Quickwire)',
+  'alt_electrodecircuitboard': 'Electrode Circuit Board',
+  'alt_circuitboard_1': 'Circuit Board (Silicon)',
+  'alt_circuitboard_2': 'Circuit Board (Quickwire)',
+  'alt_coal_1': 'Coal (Biomass)',
+  'alt_coal_2': 'Coal (Charcoal)',
+  'alt_enrichedcoal': 'Enriched Coal',
+  'alt_computer_1': 'Computer (OC)',
+  'alt_computer_2': 'Computer (Caterium)',
+  'alt_coolingdevice': 'Cooling Device (Alt)',
+  'alt_highspeedconnector': 'High-Speed Connector (Alt)',
+  'alt_crystaloscillator': 'Crystal Oscillator (Alt)',
+  'alt_heatsink_1': 'Heat Sink (Alt)',
+  'alt_hight speed wiring': 'High-Speed Wiring',
+  'alt_nuclearfuelrod_1': 'Nuclear Fuel Rod (Alt)',
+  'alt_uraniumcell_1': 'Uranium Cell (Alt)',
+  'alt_fertileuranium': 'Fertile Uranium',
+  'alt_plutoniumfuelunit': 'Plutonium Fuel Unit',
+  'alt_ocsupercomputer': 'OC Supercomputer',
+  'alt_superstatecomputer': 'Super-State Computer',
+  'alt_radiocontrolsystem': 'Radio Control System (Alt)',
+  'alt_radiocontrolunit_1': 'Radio Control Unit (Alt)',
+  'alt_flexibleframework': 'Flexible Framework',
+  'alt_automatedminer': 'Automated Miner',
+  'alt_polyesterfabric': 'Polyester Fabric',
+  'alt_recycledrubber': 'Recycled Rubber',
+  'alt_plasticsmartplating': 'Plastic Smart Plating',
+  'alt_turbopressuremotor': 'Turbo Pressure Motor',
+  'alt_turbomotor_1': 'Turbo Motor (Alt)',
+  'alt_silica': 'Silica (Alt)',
+  'alt_purequartzcrystal': 'Pure Quartz Crystal',
+  'alt_dilutedpackagedfuel': 'Diluted Packaged Fuel',
+};
+
 function getEdgeColor(category) {
   return CATEGORY_COLORS[category] || '#4a5a75';
 }
 
-export function findRecipe(itemName, recipes) {
-  return recipes.find(r => getRecipeItem(r) === itemName) || null;
+export function isAlternateRecipe(recipe) {
+  return recipe.id && recipe.id.startsWith('alt_');
+}
+
+export function getRecipeDisplayName(recipe) {
+  if (recipe.recipeName) return recipe.recipeName;
+  if (ALT_RECIPE_NAMES[recipe.id]) return ALT_RECIPE_NAMES[recipe.id];
+  if (recipe.id && isAlternateRecipe(recipe)) {
+    const base = recipe.id.replace('alt_', '');
+    return base.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  }
+  return recipe.item || 'Default';
+}
+
+export function getRecipesForItem(itemName, recipes) {
+  return recipes.filter(r => getRecipeItem(r) === itemName);
+}
+
+export function findRecipe(itemName, recipes, selectedRecipeName) {
+  const recipesForItem = recipes.filter(r => getRecipeItem(r) === itemName);
+  if (recipesForItem.length === 0) return null;
+  if (selectedRecipeName) {
+    const found = recipesForItem.find(r => getRecipeDisplayName(r) === selectedRecipeName);
+    if (found) return found;
+  }
+  return recipesForItem.find(r => !isAlternateRecipe(r)) || recipesForItem[0];
 }
 
 function getRecipeItem(recipe) {
@@ -62,25 +170,25 @@ export function getScaleFactor(recipe, targetAmount) {
   return targetAmount / getRecipeOutputRate(recipe);
 }
 
-function accumulateAmounts(item, amount, recipes, pathVisited, amounts) {
+function accumulateAmounts(item, amount, recipes, pathVisited, amounts, selectedRecipes) {
   if (pathVisited.has(item)) return;
   pathVisited = new Set(pathVisited);
   pathVisited.add(item);
 
   amounts.set(item, (amounts.get(item) || 0) + amount);
 
-  const recipe = findRecipe(item, recipes);
+  const recipe = findRecipe(item, recipes, selectedRecipes?.[item]);
   if (!recipe) return;
 
   const scaleFactor = getScaleFactor(recipe, amount);
   (recipe.ingredients || []).forEach(ing => {
-    accumulateAmounts(ing.item, ing.amount_per_min * scaleFactor, recipes, pathVisited, amounts);
+    accumulateAmounts(ing.item, ing.amount_per_min * scaleFactor, recipes, pathVisited, amounts, selectedRecipes);
   });
 }
 
-function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx) {
+function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx, selectedRecipes) {
   let entry = nodeMap.get(item);
-  const recipe = findRecipe(item, recipes);
+  const recipe = findRecipe(item, recipes, selectedRecipes?.[item]);
   const isRawResource = !recipe;
 
   if (!entry) {
@@ -103,6 +211,13 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
 
     const category = itemMeta.category || 'unknown';
     const edgeColor = getEdgeColor(category);
+
+    const allRecipesForItem = getRecipesForItem(item, recipes);
+    const availableRecipes = allRecipesForItem.map(r => ({
+      recipeName: getRecipeDisplayName(r),
+      isAlternate: isAlternateRecipe(r),
+    }));
+    const activeRecipe = recipe ? getRecipeDisplayName(recipe) : null;
 
     const node = {
       id: nodeId,
@@ -128,6 +243,8 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
         overflowing: false,
         inputCount: 0,
         outputCount: 0,
+        availableRecipes,
+        activeRecipe,
       },
     };
 
@@ -137,7 +254,7 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
     if (!isRawResource && recipe) {
       const sf = getScaleFactor(recipe, totalAmount);
       (recipe.ingredients || []).forEach(ing => {
-        buildGraph(ing.item, ing.amount_per_min * sf, nodeId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx);
+        buildGraph(ing.item, ing.amount_per_min * sf, nodeId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx, selectedRecipes);
       });
 
       const byproducts = getRecipeByproducts(recipe, sf, itemsMap);
@@ -230,17 +347,17 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
 }
 
 export function buildProductionTree(targetItem, targetAmount, recipes, itemsMap, options = {}) {
-  const { nodeIdPrefix = 'tree' } = options;
+  const { nodeIdPrefix = 'tree', selectedRecipes = {} } = options;
 
   const amounts = new Map();
-  accumulateAmounts(targetItem, targetAmount, recipes, new Set(), amounts);
+  accumulateAmounts(targetItem, targetAmount, recipes, new Set(), amounts, selectedRecipes);
 
   const nodeMap = new Map();
   const edges = [];
   const edgeSet = new Set();
   const edgeHandleIdx = { source: new Map(), target: new Map() };
 
-  buildGraph(targetItem, targetAmount, null, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx);
+  buildGraph(targetItem, targetAmount, null, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx, selectedRecipes);
 
   const rootNode = nodeMap.get(targetItem);
   if (rootNode) {

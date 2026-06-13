@@ -15,9 +15,12 @@ const IngredientNode = memo(({ id, data, selected }) => {
     overflowing,
     onOverrideChange,
     onDelete,
+    onRecipeChange,
     inputCount,
     outputCount,
     byproductCount = 0,
+    availableRecipes = [],
+    activeRecipe,
   } = data;
 
   const hasUnderclock = underclockPercent > 0 && fullMachines < machineCount;
@@ -108,6 +111,27 @@ const IngredientNode = memo(({ id, data, selected }) => {
           <span className="established-label">Üretim Kuruldu</span>
         </div>
       </div>
+
+      {availableRecipes.length > 1 && (
+        <div className="node-recipe-select nodrag" style={{ padding: '0 12px 10px' }}>
+          <select
+            className="recipe-dropdown"
+            value={activeRecipe || ''}
+            onChange={(e) => {
+              e.stopPropagation();
+              if (onRecipeChange) onRecipeChange(id, itemName, e.target.value);
+            }}
+            onClick={e => e.stopPropagation()}
+            onMouseDown={e => e.stopPropagation()}
+          >
+            {availableRecipes.map(r => (
+              <option key={r.recipeName} value={r.recipeName}>
+                {r.isAlternate ? '✦ ' : ''}{r.recipeName}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {Array.from({ length: outputCount || 1 }, (_, i) => {
         const count = Math.max(1, outputCount);
