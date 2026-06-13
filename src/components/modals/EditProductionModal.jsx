@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { isAlternateRecipe } from '../../engine/recipeEngine';
 
 /**
  * EditProductionModal — Üretim ağacını düzenleme modalı.
@@ -24,7 +25,7 @@ export default function EditProductionModal({
 
   const filteredRecipes = useMemo(() => {
     const q = search.toLowerCase();
-    return recipes.filter(r => r.item.toLowerCase().includes(q));
+    return recipes.filter(r => !isAlternateRecipe(r) && r.item.toLowerCase().includes(q));
   }, [recipes, search]);
 
   useEffect(() => {

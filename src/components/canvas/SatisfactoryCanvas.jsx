@@ -185,6 +185,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
 
     const targetItem = rootNode.data.itemName;
     const targetAmount = rootNode.data.standardAmount;
+    const rootPos = rootNode.position || { x: 0, y: 0 };
 
     const { nodes: treeNodes, edges: treeEdges } = buildProductionTree(
       targetItem,
@@ -194,7 +195,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
       { nodeIdPrefix: prefix, selectedRecipes: selectedRecipesRef.current[prefix] }
     );
 
-    const laidOutNodes = await applyLayout(treeNodes, treeEdges);
+    const laidOutNodes = await applyLayout(treeNodes, treeEdges, { offsetX: rootPos.x, offsetY: rootPos.y });
     const routedEdges = assignClosestHandles(laidOutNodes, treeEdges);
 
     const nodesWithOverrides = applyOverrides(laidOutNodes, routedEdges, treeOverrides);
@@ -366,6 +367,9 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const closeNodeContextMenu = useCallback(() => setNodeContextMenu(null), []);
 
   const rebuildTree = useCallback(async (prefix, newItem, newTargetAmount, preservedOverrides) => {
+    const currentRoot = nodesRef.current.find(n => n.id.startsWith(prefix) && n.type === 'productionRootNode');
+    const rootPos = currentRoot?.position || { x: 0, y: 0 };
+
     const { nodes: treeNodes, edges: treeEdges } = buildProductionTree(
       newItem,
       newTargetAmount,
@@ -377,7 +381,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
       }
     );
 
-    const laidOutNodes = await applyLayout(treeNodes, treeEdges);
+    const laidOutNodes = await applyLayout(treeNodes, treeEdges, { offsetX: rootPos.x, offsetY: rootPos.y });
     const routedEdges = assignClosestHandles(laidOutNodes, treeEdges);
 
     const nodesWithOverrides = applyOverrides(laidOutNodes, routedEdges, preservedOverrides || {});
