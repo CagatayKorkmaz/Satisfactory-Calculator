@@ -46,7 +46,7 @@ const ProductionRootNode = memo(({ id, data, selected }) => {
           borderRadius: '16px 16px 0 0',
         }}
       >
-        {icon.startsWith('/')
+        {icon?.startsWith('/')
           ? <img className="node-icon" src={icon} alt={itemName} />
           : <span className="node-icon">{icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>

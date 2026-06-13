@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { isAlternateRecipe } from '../../engine/recipeEngine';
 
 /**
@@ -22,6 +22,7 @@ export default function EditProductionModal({
   const [selectedItem, setSelectedItem] = useState(null);
   const [targetAmount, setTargetAmount] = useState(currentTargetAmount || 1);
   const [capacityInput, setCapacityInput] = useState('');
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const filteredRecipes = useMemo(() => {
     const q = search.toLowerCase();
@@ -36,13 +37,7 @@ export default function EditProductionModal({
     });
   }, [recipes, search]);
 
-  useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [onClose]);
-
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     if (mode === 'changeItem') {
       if (!selectedItem) return;
       onConfirm({ item: selectedItem.item, targetAmount: Number(targetAmount) });
@@ -54,7 +49,46 @@ export default function EditProductionModal({
       onConfirm({ newCapacity });
     }
     onClose();
-  };
+  }, [mode, selectedItem, currentItem, targetAmount, capacityInput, onConfirm, onClose]);
+
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  useEffect(() => {
+    if (mode !== 'changeItem') return;
+    const handler = (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setHighlightedIndex(prev => {
+          const next = Math.min(prev + 1, filteredRecipes.length - 1);
+          if (next >= 0) setSelectedItem(filteredRecipes[next]);
+          return next;
+        });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setHighlightedIndex(prev => {
+          const next = Math.max(prev - 1, 0);
+          if (next >= 0 && filteredRecipes[next]) setSelectedItem(filteredRecipes[next]);
+          return next;
+        });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (selectedItem) handleConfirm();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [mode, filteredRecipes, selectedItem, handleConfirm]);
+
+  useEffect(() => {
+    if (highlightedIndex >= 0 && filteredRecipes[highlightedIndex]) {
+      const el = document.getElementById(`edit-item-${filteredRecipes[highlightedIndex].id}`);
+      if (el) el.scrollIntoView({ block: 'nearest' });
+    }
+  }, [highlightedIndex, filteredRecipes]);
 
   const selectedMeta = mode === 'changeItem' && selectedItem
     ? (itemsMap[selectedItem.item] || {})
@@ -126,16 +160,21 @@ export default function EditProductionModal({
                   <div style={{ padding: '24px', textAlign: 'center', color: 'var(--color-text-muted)', fontSize: 13 }}>
                     Ürün bulunamadı
                   </div>
-                ) : filteredRecipes.map(recipe => {
+                ) : filteredRecipes.map((recipe, index) => {
                   const meta = itemsMap[recipe.item] || { icon: '📦', category: '' };
                   const isSelected = selectedItem?.item === recipe.item;
+                  const isHighlighted = highlightedIndex === index;
                   return (
                     <div
                       key={recipe.id}
-                      className={`item-list-item ${isSelected ? 'selected' : ''}`}
-                      onClick={() => setSelectedItem(recipe)}
+                      id={`edit-item-${recipe.id}`}
+                      className={`item-list-item ${isSelected ? 'selected' : ''} ${isHighlighted ? 'highlighted' : ''}`}
+                      onClick={() => {
+                        setSelectedItem(recipe);
+                        setHighlightedIndex(index);
+                      }}
                     >
-                      {meta.icon.startsWith('/')
+                      {meta.icon?.startsWith('/')
                         ? <img className="item-icon" src={meta.icon} alt={recipe.item} />
                         : <span className="item-icon">{meta.icon}</span>}
                       <div style={{ flex: 1 }}>

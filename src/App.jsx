@@ -48,6 +48,24 @@ export default function App() {
     );
   }
 
+  const handleRetry = () => {
+    setLoading(true);
+    setError(null);
+    fetch('/data/recipes.json')
+      .then(res => {
+        if (!res.ok) throw new Error('recipes.json yüklenemedi');
+        return res.json();
+      })
+      .then(data => {
+        setRecipesData(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  };
+
   if (error) {
     return (
       <div style={{
@@ -59,6 +77,13 @@ export default function App() {
       }}>
         <div style={{ fontSize: 48 }}>⚠️</div>
         <div style={{ color: 'var(--color-error)', fontSize: 16 }}>Hata: {error}</div>
+        <button
+          className="btn btn-primary"
+          onClick={handleRetry}
+          style={{ marginTop: 8 }}
+        >
+          🔄 Tekrar Dene
+        </button>
       </div>
     );
   }

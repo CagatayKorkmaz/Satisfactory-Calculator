@@ -25,24 +25,12 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
     });
   }, [recipes, search]);
 
-  // Arama sonuçları değişince ilk sonucu pre-select yap
-  useEffect(() => {
-    if (filteredRecipes.length > 0) {
-      setHighlightedIndex(0);
-      setSelectedItem(filteredRecipes[0]);
-    } else {
-      setHighlightedIndex(-1);
-      setSelectedItem(null);
-    }
-  }, [filteredRecipes]);
-
   const handleConfirm = useCallback(() => {
     if (!selectedItem) return;
     onConfirm({ item: selectedItem.item, targetAmount: Number(targetAmount) });
     onClose();
   }, [selectedItem, targetAmount, onConfirm, onClose]);
 
-  // ESC, ok tuşları ve Enter ile navigation
   useEffect(() => {
     const handler = (e) => {
       if (e.key === 'Escape') {
@@ -81,7 +69,6 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
     return () => window.removeEventListener('keydown', handler);
   }, [onClose, filteredRecipes, selectedItem, handleConfirm]);
 
-  // Seçili öğeyi görünüme kaydır
   useEffect(() => {
     if (highlightedIndex >= 0 && filteredRecipes[highlightedIndex]) {
       const el = document.getElementById(`item-${filteredRecipes[highlightedIndex].id}`);
@@ -150,8 +137,8 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
                     setHighlightedIndex(index);
                   }}
                 >
-                  {meta.icon.startsWith('/')
-                  ? <img className="item-icon" src={meta.icon} alt={recipe.item} />
+                    {meta.icon?.startsWith('/')
+                      ? <img className="item-icon" src={meta.icon} alt={recipe.item} />
                   : <span className="item-icon">{meta.icon}</span>}
                   <div style={{ flex: 1 }}>
                     <div className="item-name">{recipe.item}</div>

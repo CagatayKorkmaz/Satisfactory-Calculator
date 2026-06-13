@@ -127,6 +127,8 @@ export default function NoteFormattingBar({
             outlineOffset: 2,
           }}
           onClick={() => onUpdate(nodeId, { color: c })}
+          aria-label={`Renk: ${c}`}
+          title={`Renk: ${c}`}
         />
       ))}
 

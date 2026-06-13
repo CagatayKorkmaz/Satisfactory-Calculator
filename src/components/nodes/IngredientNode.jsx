@@ -74,7 +74,7 @@ const IngredientNode = memo(({ id, data, selected }) => {
       )}
 
       <div className="node-header">
-        {icon.startsWith('/')
+        {icon?.startsWith('/')
           ? <img className="node-icon" src={icon} alt={itemName} />
           : <span className="node-icon">{icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>

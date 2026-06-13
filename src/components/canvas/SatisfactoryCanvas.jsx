@@ -48,8 +48,10 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const selectedRecipesRef = useRef({});
   const rfInstanceRef = useRef(null);
   const nodesRef = useRef([]);
+  const edgesRef = useRef([]);
 
   useEffect(() => { nodesRef.current = nodes; }, [nodes]);
+  useEffect(() => { edgesRef.current = edges; }, [edges]);
 
   useEffect(() => {
     if (!isBulkMode) return;
@@ -59,7 +61,12 @@ export default function SatisfactoryCanvas({ recipesData }) {
   }, [isBulkMode]);
 
   const onConnect = useCallback((params) => {
-    setEdges(eds => addEdge({ ...params, type: 'smoothstep', animated: false }, eds));
+    setEdges(eds => addEdge({
+      ...params,
+      type: 'smoothstep',
+      animated: false,
+      data: { flowRate: 0, category: 'user' },
+    }, eds));
   }, [setEdges]);
 
   const handleDeleteNodeRef = useRef(null);
@@ -78,7 +85,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
     delete selectedRecipesRef.current[prefix];
   }, [setNodes, setEdges]);
 
-  handleDeleteNodeRef.current = handleDeleteNode;
+  useEffect(() => { handleDeleteNodeRef.current = handleDeleteNode; }, [handleDeleteNode]);
 
   const handleOverrideChange = useCallback((nodeId, itemName, value) => {
     const parts = nodeId.split('_');
@@ -92,115 +99,56 @@ export default function SatisfactoryCanvas({ recipesData }) {
     }
     overridesRef.current[prefix] = treeOverrides;
 
-    setNodes(prevNodes => {
-      const treeNodes = prevNodes.filter(n => n.id.startsWith(prefix));
-
-      if (treeNodes.length === 0) return prevNodes;
-
-      setEdges(prevEdges => {
-        const treeEdges = prevEdges.filter(e =>
-          e.source.startsWith(prefix) || e.target.startsWith(prefix)
-        );
-        const otherEdges = prevEdges.filter(e =>
-          !e.source.startsWith(prefix) && !e.target.startsWith(prefix)
-        );
-
-        // Cascade established: ancak çocuğun TÜM ebeveynleri checkliyse çocuğu da checkle
-        if (value !== null && value !== undefined) {
-          const alreadySatisfied = new Set(
-            treeNodes.filter(n => n.data?.satisfied).map(n => n.id)
-          );
-          const toEstablish = new Set([nodeId]);
-          const queue = [nodeId];
-          while (queue.length > 0) {
-            const current = queue.pop();
-            treeEdges.forEach(e => {
-              if (e.target === current) {
-                const childId = e.source;
-                if (toEstablish.has(childId)) return;
-                const allParentsOk = treeEdges
-                  .filter(edge => edge.source === childId)
-                  .every(edge =>
-                    alreadySatisfied.has(edge.target) || toEstablish.has(edge.target)
-                  );
-                if (allParentsOk) {
-                  toEstablish.add(childId);
-                  queue.push(childId);
-                }
-              }
-            });
-          }
-          toEstablish.forEach(id => {
-            const node = treeNodes.find(n => n.id === id);
-            if (node?.data?.standardAmount) {
-              treeOverrides[node.data.itemName] = node.data.standardAmount;
-            }
-          });
-          overridesRef.current[prefix] = treeOverrides;
-        }
-
-        const { nodes: updatedNodes, edges: updatedEdges } =
-          applyOverrides(treeNodes, treeEdges, treeOverrides);
-
-        const withCallbacks = updatedNodes.map(n => ({
-          ...n,
-          data: {
-            ...n.data,
-            onOverrideChange: handleOverrideChangeRef.current,
-            onDelete: handleDeleteNodeRef.current,
-            onRecipeChange: handleRecipeChangeRef.current,
-          },
-        }));
-
-        setTimeout(() => {
-          setNodes(prev => [
-            ...prev.filter(n => !n.id.startsWith(prefix)),
-            ...withCallbacks,
-          ]);
-        }, 0);
-
-        return [...otherEdges, ...updatedEdges];
-      });
-
-      return prevNodes;
-    });
-  }, [setNodes, setEdges]);
-
-  handleOverrideChangeRef.current = handleOverrideChange;
-
-  const handleRecipeChange = useCallback(async (nodeId, itemName, recipeName) => {
-    const parts = nodeId.split('_');
-    const prefix = parts.slice(0, 2).join('_');
-
-    const treeSelected = { ...(selectedRecipesRef.current[prefix] || {}) };
-    treeSelected[itemName] = recipeName;
-    selectedRecipesRef.current[prefix] = treeSelected;
-
-    const treeOverrides = { ...(overridesRef.current[prefix] || {}) };
-    overridesRef.current[prefix] = treeOverrides;
-
     const currentNodes = nodesRef.current;
-    const rootNode = currentNodes.find(n => n.id.startsWith(prefix) && n.type === 'productionRootNode');
-    if (!rootNode) return;
+    const currentEdges = edgesRef.current;
 
-    const targetItem = rootNode.data.itemName;
-    const targetAmount = rootNode.data.standardAmount;
-    const rootPos = rootNode.position || { x: 0, y: 0 };
-
-    const { nodes: treeNodes, edges: treeEdges } = buildProductionTree(
-      targetItem,
-      targetAmount,
-      recipes,
-      itemsMap,
-      { nodeIdPrefix: prefix, selectedRecipes: selectedRecipesRef.current[prefix] }
+    const treeNodes = currentNodes.filter(n => n.id.startsWith(prefix));
+    const treeEdges = currentEdges.filter(e =>
+      e.source.startsWith(prefix) || e.target.startsWith(prefix)
+    );
+    const otherEdges = currentEdges.filter(e =>
+      !e.source.startsWith(prefix) && !e.target.startsWith(prefix)
     );
 
-    const laidOutNodes = await applyLayout(treeNodes, treeEdges, { offsetX: rootPos.x, offsetY: rootPos.y });
-    const routedEdges = assignClosestHandles(laidOutNodes, treeEdges);
+    if (treeNodes.length === 0) return;
 
-    const nodesWithOverrides = applyOverrides(laidOutNodes, routedEdges, treeOverrides);
+    if (value !== null && value !== undefined) {
+      const alreadySatisfied = new Set(
+        treeNodes.filter(n => n.data?.satisfied).map(n => n.id)
+      );
+      const toEstablish = new Set([nodeId]);
+      const queue = [nodeId];
+      while (queue.length > 0) {
+        const current = queue.pop();
+        treeEdges.forEach(e => {
+          if (e.target === current) {
+            const childId = e.source;
+            if (toEstablish.has(childId)) return;
+            const allParentsOk = treeEdges
+              .filter(edge => edge.source === childId)
+              .every(edge =>
+                alreadySatisfied.has(edge.target) || toEstablish.has(edge.target)
+              );
+            if (allParentsOk) {
+              toEstablish.add(childId);
+              queue.push(childId);
+            }
+          }
+        });
+      }
+      toEstablish.forEach(id => {
+        const node = treeNodes.find(n => n.id === id);
+        if (node?.data?.standardAmount) {
+          treeOverrides[node.data.itemName] = node.data.standardAmount;
+        }
+      });
+      overridesRef.current[prefix] = treeOverrides;
+    }
 
-    const withCallbacks = nodesWithOverrides.nodes.map(n => ({
+    const { nodes: updatedNodes, edges: updatedEdges } =
+      applyOverrides(treeNodes, treeEdges, treeOverrides);
+
+    const withCallbacks = updatedNodes.map(n => ({
       ...n,
       data: {
         ...n.data,
@@ -210,14 +158,72 @@ export default function SatisfactoryCanvas({ recipesData }) {
       },
     }));
 
-    setNodes(prev => [...prev.filter(n => !n.id.startsWith(prefix)), ...withCallbacks]);
-    setEdges(prev => [
-      ...prev.filter(e => !e.source.startsWith(prefix) && !e.target.startsWith(prefix)),
-      ...nodesWithOverrides.edges,
+    setNodes(prev => [
+      ...prev.filter(n => !n.id.startsWith(prefix)),
+      ...withCallbacks,
     ]);
+    setEdges([
+      ...otherEdges,
+      ...updatedEdges,
+    ]);
+  }, [setNodes, setEdges]);
+
+  useEffect(() => { handleOverrideChangeRef.current = handleOverrideChange; }, [handleOverrideChange]);
+
+  const handleRecipeChange = useCallback(async (nodeId, itemName, recipeName) => {
+    try {
+      const parts = nodeId.split('_');
+      const prefix = parts.slice(0, 2).join('_');
+
+      const treeSelected = { ...(selectedRecipesRef.current[prefix] || {}) };
+      treeSelected[itemName] = recipeName;
+      selectedRecipesRef.current[prefix] = treeSelected;
+
+      const treeOverrides = { ...(overridesRef.current[prefix] || {}) };
+      overridesRef.current[prefix] = treeOverrides;
+
+      const currentNodes = nodesRef.current;
+      const rootNode = currentNodes.find(n => n.id.startsWith(prefix) && n.type === 'productionRootNode');
+      if (!rootNode) return;
+
+      const targetItem = rootNode.data.itemName;
+      const targetAmount = rootNode.data.standardAmount;
+      const rootPos = rootNode.position || { x: 0, y: 0 };
+
+      const { nodes: treeNodes, edges: treeEdges } = buildProductionTree(
+        targetItem,
+        targetAmount,
+        recipes,
+        itemsMap,
+        { nodeIdPrefix: prefix, selectedRecipes: selectedRecipesRef.current[prefix] }
+      );
+
+      const laidOutNodes = await applyLayout(treeNodes, treeEdges, { offsetX: rootPos.x, offsetY: rootPos.y });
+      const routedEdges = assignClosestHandles(laidOutNodes, treeEdges);
+
+      const nodesWithOverrides = applyOverrides(laidOutNodes, routedEdges, treeOverrides);
+
+      const withCallbacks = nodesWithOverrides.nodes.map(n => ({
+        ...n,
+        data: {
+          ...n.data,
+          onOverrideChange: handleOverrideChangeRef.current,
+          onDelete: handleDeleteNodeRef.current,
+          onRecipeChange: handleRecipeChangeRef.current,
+        },
+      }));
+
+      setNodes(prev => [...prev.filter(n => !n.id.startsWith(prefix)), ...withCallbacks]);
+      setEdges(prev => [
+        ...prev.filter(e => !e.source.startsWith(prefix) && !e.target.startsWith(prefix)),
+        ...nodesWithOverrides.edges,
+      ]);
+    } catch (err) {
+      console.error('Tarif değiştirme hatası:', err);
+    }
   }, [recipes, itemsMap, setNodes, setEdges]);
 
-  handleRecipeChangeRef.current = handleRecipeChange;
+  useEffect(() => { handleRecipeChangeRef.current = handleRecipeChange; }, [handleRecipeChange]);
 
   const handleTextNodeChange = useCallback((nodeId, updates) => {
     setNodes(prev => prev.map(n =>
@@ -775,7 +781,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
           nodeData={selectedNoteNode.data}
           itemsMap={itemsMap}
           onUpdate={handleFormattingUpdate}
-          onDelete={handleDeleteNodeRef.current}
+          onDelete={(id) => handleDeleteNodeRef.current?.(id)}
         />
       )}
 

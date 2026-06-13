@@ -44,7 +44,7 @@ const RawNode = memo(({ id, data, selected }) => {
           background: 'rgba(245, 158, 11, 0.08)',
         }}
       >
-        {icon.startsWith('/')
+        {icon?.startsWith('/')
           ? <img className="node-icon" src={icon} alt={itemName} />
           : <span className="node-icon">{icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>
