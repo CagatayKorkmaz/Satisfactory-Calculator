@@ -62,16 +62,9 @@ export default function SatisfactoryCanvas({ recipesData }) {
     edgesRef.current = edges;
   }, [edges]);
 
-  const [saveStatus, setSaveStatus] = useState(hasSaved ? 'loaded' : '');
   const saveTimeoutRef = useRef(null);
-  const isInitialRender = useRef(true);
 
   useEffect(() => {
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      return;
-    }
-    setSaveStatus('saving');
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
       saveToStorage({
@@ -80,8 +73,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
         overrides: overridesRef.current,
         selectedRecipes: selectedRecipesRef.current,
       });
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus(''), 2500);
     }, 800);
     return () => { if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current); };
   }, [nodes, edges]);
@@ -258,6 +249,22 @@ export default function SatisfactoryCanvas({ recipesData }) {
 
   useEffect(() => { handleRecipeChangeRef.current = handleRecipeChange; }, [handleRecipeChange]);
 
+  useEffect(() => {
+    if (!hasSaved) return;
+    setNodes(prev => prev.map(n => {
+      if (n.type === 'textNode' || !n.data) return n;
+      return {
+        ...n,
+        data: {
+          ...n.data,
+          onOverrideChange: handleOverrideChangeRef.current,
+          onDelete: handleDeleteNodeRef.current,
+          onRecipeChange: handleRecipeChangeRef.current,
+        },
+      };
+    }));
+  }, [hasSaved, setNodes]);
+
   const handleTextNodeChange = useCallback((nodeId, updates) => {
     setNodes(prev => prev.map(n =>
       n.id === nodeId
@@ -364,8 +371,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
       overridesRef.current = {};
       selectedRecipesRef.current = {};
       clearStorage();
-      setSaveStatus('cleared');
-      setTimeout(() => setSaveStatus(''), 2500);
     }
   }, [setNodes, setEdges]);
 
@@ -776,34 +781,6 @@ export default function SatisfactoryCanvas({ recipesData }) {
         }}>
           Satisfactory
         </span>
-        {saveStatus && (
-          <div className={`save-status-badge ${saveStatus}`} style={{ marginRight: 8 }}>
-            {saveStatus === 'saving' && (
-              <>
-                <div className="spinner"></div>
-                <span>Kaydediliyor...</span>
-              </>
-            )}
-            {saveStatus === 'saved' && (
-              <>
-                <span className="icon">✓</span>
-                <span>Kaydedildi</span>
-              </>
-            )}
-            {saveStatus === 'loaded' && (
-              <>
-                <span className="icon">☁️</span>
-                <span>Yüklendi</span>
-              </>
-            )}
-            {saveStatus === 'cleared' && (
-              <>
-                <span className="icon">🗑️</span>
-                <span>Temizlendi</span>
-              </>
-            )}
-          </div>
-        )}
         <div className="toolbar-divider" />
         <button
           id="btn-add-production"

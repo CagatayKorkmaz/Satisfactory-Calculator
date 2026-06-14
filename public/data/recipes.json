@@ -4335,6 +4335,62 @@
           "amount_per_min": 15
         }
       ]
+    },
+    {
+      "id": "alt_molded_beam",
+      "item": "Steel Beam",
+      "output_per_min": 45,
+      "machine": "Foundry",
+      "ingredients": [
+        {
+          "item": "Steel Ingot",
+          "amount_per_min": 120
+        },
+        {
+          "item": "Concrete",
+          "amount_per_min": 80
+        }
+      ]
+    },
+    {
+      "id": "alt_aluminum_beam",
+      "item": "Steel Beam",
+      "output_per_min": 22.5,
+      "machine": "Constructor",
+      "ingredients": [
+        {
+          "item": "Aluminum Ingot",
+          "amount_per_min": 22.5
+        }
+      ]
+    },
+    {
+      "id": "alt_iron_pipe",
+      "item": "Steel Pipe",
+      "output_per_min": 25,
+      "machine": "Constructor",
+      "ingredients": [
+        {
+          "item": "Iron Ingot",
+          "amount_per_min": 100
+        }
+      ]
+    },
+    {
+      "id": "alt_molded_steel_pipe",
+      "item": "Steel Pipe",
+      "output_per_min": 50,
+      "machine": "Foundry",
+      "ingredients": [
+        {
+          "item": "Steel Ingot",
+          "amount_per_min": 50
+        },
+        {
+          "item": "Concrete",
+          "amount_per_min": 30
+        }
+      ]
     }
   ]
 }

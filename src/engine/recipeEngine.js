@@ -88,6 +88,10 @@ const ALT_RECIPE_NAMES = {
   'alt_silica': 'Silica (Alt)',
   'alt_purequartzcrystal': 'Pure Quartz Crystal',
   'alt_dilutedpackagedfuel': 'Diluted Packaged Fuel',
+  'alt_molded_beam': 'Molded Beam',
+  'alt_aluminum_beam': 'Aluminum Beam',
+  'alt_iron_pipe': 'Iron Pipe',
+  'alt_molded_steel_pipe': 'Molded Steel Pipe',
   // Variant recipes (non-alt, but different from primary)
   'residualrubber': 'Residual Rubber',
   'residualplastic': 'Residual Plastic',
