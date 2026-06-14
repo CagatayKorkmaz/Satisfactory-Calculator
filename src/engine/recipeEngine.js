@@ -35,7 +35,7 @@ const ALT_RECIPE_NAMES = {
   'alt_modularframe': 'Steeled Frame',
   'alt_boltedframe': 'Bolted Frame',
   'alt_heavyflexibleframe': 'Flexible Frame',
-  'alt_encasedindustrialbeam': 'Encased Industrial Beam',
+  'alt_encasedindustrialbeam': 'Encased Industrial Pipe',
   'alt_heatfusedframe': 'Heat-Fused Frame',
   'alt_plastic_1': 'Recycled Plastic',
   'alt_wetconcrete': 'Wet Concrete',
