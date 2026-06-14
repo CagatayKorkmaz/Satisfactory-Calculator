@@ -51,12 +51,27 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const overridesRef = useRef(hasSaved ? saved.overrides || {} : {});
   const selectedRecipesRef = useRef(hasSaved ? saved.selectedRecipes || {} : {});
   const rfInstanceRef = useRef(null);
-  const nodesRef = useRef([]);
-  const edgesRef = useRef([]);
-  const [saveStatus, setSaveStatus] = useState(hasSaved ? 'Yüklendi' : '');
+  const nodesRef = useRef(hasSaved ? saved.nodes : []);
+  const edgesRef = useRef(hasSaved ? saved.edges : []);
 
-  const saveTimeoutRef = useRef(null);
   useEffect(() => {
+    nodesRef.current = nodes;
+  }, [nodes]);
+
+  useEffect(() => {
+    edgesRef.current = edges;
+  }, [edges]);
+
+  const [saveStatus, setSaveStatus] = useState(hasSaved ? 'loaded' : '');
+  const saveTimeoutRef = useRef(null);
+  const isInitialRender = useRef(true);
+
+  useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+    setSaveStatus('saving');
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
       saveToStorage({
@@ -65,9 +80,9 @@ export default function SatisfactoryCanvas({ recipesData }) {
         overrides: overridesRef.current,
         selectedRecipes: selectedRecipesRef.current,
       });
-      setSaveStatus('Kaydedildi');
-      setTimeout(() => setSaveStatus(''), 2000);
-    }, 1000);
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus(''), 2500);
+    }, 800);
     return () => { if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current); };
   }, [nodes, edges]);
 
@@ -349,8 +364,8 @@ export default function SatisfactoryCanvas({ recipesData }) {
       overridesRef.current = {};
       selectedRecipesRef.current = {};
       clearStorage();
-      setSaveStatus('Temizlendi');
-      setTimeout(() => setSaveStatus(''), 2000);
+      setSaveStatus('cleared');
+      setTimeout(() => setSaveStatus(''), 2500);
     }
   }, [setNodes, setEdges]);
 
@@ -762,12 +777,32 @@ export default function SatisfactoryCanvas({ recipesData }) {
           Satisfactory
         </span>
         {saveStatus && (
-          <span style={{
-            fontSize: 11, color: 'var(--color-text-muted)',
-            marginRight: 8, whiteSpace: 'nowrap',
-          }}>
-            {saveStatus}
-          </span>
+          <div className={`save-status-badge ${saveStatus}`} style={{ marginRight: 8 }}>
+            {saveStatus === 'saving' && (
+              <>
+                <div className="spinner"></div>
+                <span>Kaydediliyor...</span>
+              </>
+            )}
+            {saveStatus === 'saved' && (
+              <>
+                <span className="icon">✓</span>
+                <span>Kaydedildi</span>
+              </>
+            )}
+            {saveStatus === 'loaded' && (
+              <>
+                <span className="icon">☁️</span>
+                <span>Yüklendi</span>
+              </>
+            )}
+            {saveStatus === 'cleared' && (
+              <>
+                <span className="icon">🗑️</span>
+                <span>Temizlendi</span>
+              </>
+            )}
+          </div>
         )}
         <div className="toolbar-divider" />
         <button

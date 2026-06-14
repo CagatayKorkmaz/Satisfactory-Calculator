@@ -1103,3 +1103,54 @@ html, body, #root {
   background: var(--color-primary-glow);
   color: var(--color-primary);
 }
+
+/* ============================================================
+   Save Status Badge
+   ============================================================ */
+.save-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-dim);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  animation: fadeIn 200ms ease;
+  transition: all var(--transition-fast);
+}
+
+.save-status-badge.saving {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-glow);
+}
+
+.save-status-badge.saved, .save-status-badge.loaded {
+  border-color: var(--color-success);
+  color: var(--color-success);
+  background: var(--color-success-glow);
+}
+
+.save-status-badge.cleared {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+  background: var(--color-warning-glow);
+}
+
+.save-status-badge .icon {
+  font-size: 13px;
+}
+
+.save-status-badge .spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--color-primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin-slow 0.8s linear infinite;
+}
