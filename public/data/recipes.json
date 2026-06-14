@@ -759,6 +759,31 @@
       "name": "Zipline",
       "icon": "/images/items/Zipline.png",
       "category": "component"
+    },
+    "Rocket Fuel": {
+      "name": "Rocket Fuel",
+      "icon": "/images/items/Rocket_Fuel.png",
+      "category": "fluid"
+    },
+    "Packaged Rocket Fuel": {
+      "name": "Packaged Rocket Fuel",
+      "icon": "/images/items/Packaged_Rocket_Fuel.png",
+      "category": "component"
+    },
+    "Ionized Fuel": {
+      "name": "Ionized Fuel",
+      "icon": "/images/items/Ionized_Fuel.png",
+      "category": "fluid"
+    },
+    "Packaged Ionized Fuel": {
+      "name": "Packaged Ionized Fuel",
+      "icon": "/images/items/Packaged_Ionized_Fuel.png",
+      "category": "component"
+    },
+    "Dark Matter Crystal": {
+      "name": "Dark Matter Crystal",
+      "icon": "/images/items/Dark_Matter_Crystal.png",
+      "category": "component"
     }
   },
   "recipes": [
@@ -4171,7 +4196,7 @@
       ]
     },
     {
-      "id": "alt_turbofuel",
+      "id": "turbofuel",
       "item": "Turbofuel",
       "output_per_min": 18.75,
       "machine": "Refinery",
@@ -4389,6 +4414,140 @@
         {
           "item": "Concrete",
           "amount_per_min": 30
+        }
+      ]
+    },
+    {
+      "id": "rocketfuel",
+      "item": "Rocket Fuel",
+      "output_per_min": 100,
+      "machine": "Blender",
+      "ingredients": [
+        {
+          "item": "Turbofuel",
+          "amount_per_min": 60
+        },
+        {
+          "item": "Nitric Acid",
+          "amount_per_min": 10
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Compacted Coal",
+          "amount_per_min": 10
+        }
+      ]
+    },
+    {
+      "id": "packagedrocketfuel",
+      "item": "Packaged Rocket Fuel",
+      "output_per_min": 60,
+      "machine": "Packager",
+      "ingredients": [
+        {
+          "item": "Rocket Fuel",
+          "amount_per_min": 120
+        },
+        {
+          "item": "Empty Canister",
+          "amount_per_min": 60
+        }
+      ]
+    },
+    {
+      "id": "unpackagerocketfuel",
+      "item": "Rocket Fuel",
+      "output_per_min": 120,
+      "machine": "Packager",
+      "ingredients": [
+        {
+          "item": "Packaged Rocket Fuel",
+          "amount_per_min": 60
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Empty Canister",
+          "amount_per_min": 60
+        }
+      ]
+    },
+    {
+      "id": "ionizedfuel",
+      "item": "Ionized Fuel",
+      "output_per_min": 40,
+      "machine": "Refinery",
+      "ingredients": [
+        {
+          "item": "Rocket Fuel",
+          "amount_per_min": 40
+        },
+        {
+          "item": "Power Shard",
+          "amount_per_min": 2.5
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Compacted Coal",
+          "amount_per_min": 5
+        }
+      ]
+    },
+    {
+      "id": "packagedionizedfuel",
+      "item": "Packaged Ionized Fuel",
+      "output_per_min": 40,
+      "machine": "Packager",
+      "ingredients": [
+        {
+          "item": "Ionized Fuel",
+          "amount_per_min": 80
+        },
+        {
+          "item": "Empty Canister",
+          "amount_per_min": 40
+        }
+      ]
+    },
+    {
+      "id": "unpackageionizedfuel",
+      "item": "Ionized Fuel",
+      "output_per_min": 80,
+      "machine": "Packager",
+      "ingredients": [
+        {
+          "item": "Packaged Ionized Fuel",
+          "amount_per_min": 40
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Empty Canister",
+          "amount_per_min": 40
+        }
+      ]
+    },
+    {
+      "id": "alt_darkionfuel",
+      "item": "Ionized Fuel",
+      "output_per_min": 200,
+      "machine": "Converter",
+      "ingredients": [
+        {
+          "item": "Packaged Rocket Fuel",
+          "amount_per_min": 240
+        },
+        {
+          "item": "Dark Matter Crystal",
+          "amount_per_min": 80
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Compacted Coal",
+          "amount_per_min": 40
         }
       ]
     }

@@ -43,7 +43,6 @@ const ALT_RECIPE_NAMES = {
   'alt_concrete': 'Fine Concrete',
   'alt_polymerresin': 'Polymer Resin (Alt)',
   'alt_dilutedfuel': 'Diluted Fuel',
-  'alt_turbofuel': 'Turbo Fuel (Alt)',
   'alt_turboblendfuel': 'Turbo Blend Fuel',
   'alt_turboheavyfuel': 'Turbo Heavy Fuel',
   'alt_heavyoilresidue': 'Heavy Oil Residue',
@@ -92,6 +91,7 @@ const ALT_RECIPE_NAMES = {
   'alt_aluminum_beam': 'Aluminum Beam',
   'alt_iron_pipe': 'Iron Pipe',
   'alt_molded_steel_pipe': 'Molded Steel Pipe',
+  'alt_darkionfuel': 'Dark-Ion Fuel',
   // Variant recipes (non-alt, but different from primary)
   'residualrubber': 'Residual Rubber',
   'residualplastic': 'Residual Plastic',
