@@ -795,7 +795,7 @@
       "ingredients": [
         {
           "item": "Automated Wiring",
-          "amount_per_min": 7.5
+          "amount_per_min": 5
         },
         {
           "item": "Circuit Board",
@@ -807,7 +807,7 @@
         },
         {
           "item": "Computer",
-          "amount_per_min": 1
+          "amount_per_min": 2
         }
       ]
     },
@@ -1543,35 +1543,31 @@
       "ingredients": [
         {
           "item": "Circuit Board",
-          "amount_per_min": 25
+          "amount_per_min": 10
         },
         {
           "item": "Cable",
-          "amount_per_min": 22.5
+          "amount_per_min": 20
         },
         {
           "item": "Plastic",
-          "amount_per_min": 45
-        },
-        {
-          "item": "Screw",
-          "amount_per_min": 130
+          "amount_per_min": 40
         }
       ]
     },
     {
       "id": "alt_computer_2",
       "item": "Computer",
-      "output_per_min": 2.8125,
+      "output_per_min": 3.33,
       "machine": "Assembler",
       "ingredients": [
         {
           "item": "Circuit Board",
-          "amount_per_min": 7.5
+          "amount_per_min": 5
         },
         {
           "item": "Crystal Oscillator",
-          "amount_per_min": 2.8125
+          "amount_per_min": 1.67
         }
       ]
     },
@@ -1583,15 +1579,15 @@
       "ingredients": [
         {
           "item": "Circuit Board",
-          "amount_per_min": 26.25
+          "amount_per_min": 15
         },
         {
           "item": "Quickwire",
-          "amount_per_min": 105
+          "amount_per_min": 52.5
         },
         {
           "item": "Rubber",
-          "amount_per_min": 45
+          "amount_per_min": 22.5
         }
       ]
     },
@@ -2279,7 +2275,7 @@
         },
         {
           "item": "Steel Pipe",
-          "amount_per_min": 30
+          "amount_per_min": 40
         },
         {
           "item": "Encased Industrial Beam",
@@ -2287,7 +2283,7 @@
         },
         {
           "item": "Screw",
-          "amount_per_min": 200
+          "amount_per_min": 240
         }
       ]
     },
@@ -2613,7 +2609,7 @@
       "id": "spaceelevatorpart_6",
       "item": "Magnetic Field Generator",
       "output_per_min": 1,
-      "machine": "Manufacturer",
+      "machine": "Assembler",
       "ingredients": [
         {
           "item": "Versatile Framework",
@@ -2622,10 +2618,6 @@
         {
           "item": "Electromagnetic Control Rod",
           "amount_per_min": 1
-        },
-        {
-          "item": "Battery",
-          "amount_per_min": 5
         }
       ]
     },
@@ -3397,7 +3389,7 @@
         },
         {
           "item": "Computer",
-          "amount_per_min": 1.25
+          "amount_per_min": 2.5
         }
       ]
     },
@@ -3945,7 +3937,7 @@
       "ingredients": [
         {
           "item": "Computer",
-          "amount_per_min": 3.6
+          "amount_per_min": 7.2
         },
         {
           "item": "Electromagnetic Control Rod",
@@ -3957,7 +3949,7 @@
         },
         {
           "item": "Wire",
-          "amount_per_min": 54
+          "amount_per_min": 60
         }
       ]
     },
@@ -3969,7 +3961,7 @@
       "ingredients": [
         {
           "item": "Computer",
-          "amount_per_min": 3.75
+          "amount_per_min": 7.5
         },
         {
           "item": "AI Limiter",
