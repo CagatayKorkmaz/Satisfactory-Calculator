@@ -38,7 +38,7 @@ export default function AboutModal({ onClose }) {
           <div className="about-logo-icon">⚙️</div>
           <div>
             <div className="about-title">Satisfactory Planlama</div>
-            <div className="about-version">v1.1.8.1</div>
+            <div className="about-version">v1.2</div>
           </div>
           <button className="about-close-btn" onClick={onClose}>✕</button>
         </div>
@@ -111,9 +111,12 @@ export default function AboutModal({ onClose }) {
               Son Güncelleme
             </div>
             <div className="about-changelog">
-              <div className="about-changelog-version">v1.1.8.1</div>
+              <div className="about-changelog-version">v1.2</div>
               <div className="about-changelog-text">
-                Site hakkında bilgilendirme modal div'i eklendi.
+                <strong>Space Arama Çubuğu</strong> — Space tuşu ile açılan arama barı eklendi. Item ismiyle arama yapabilir, sonuçları klavye ile gezinebilirsiniz.<br /><br />
+                <strong>Matematik İşlem Desteği</strong> — Arama barında 150-50, 240/3 gibi işlemler yapabilir, sonucu not olarak ekleyebilirsiniz.<br /><br />
+                <strong>Üretim Hattı Kısayolu</strong> — Arama barından doğrudan üretim hattı oluşturabilir, hedef miktarı belirleyebilirsiniz.<br /><br />
+                <strong>Hızlı Eylemler</strong> — Item seçiminde Üretim Hattı Oluştur, Not Olarak Ekle ve Wiki'de Göster seçenekleri sunulur.
               </div>
             </div>
           </div>

@@ -20,6 +20,7 @@ import AddProductionModal from '../modals/AddProductionModal';
 import EditProductionModal from '../modals/EditProductionModal';
 import AboutModal from '../modals/AboutModal';
 import NoteFormattingBar from './NoteFormattingBar';
+import SearchBar from './SearchBar';
 
 import { buildProductionTree, generateTreeId } from '../../engine/recipeEngine';
 import { applyOverrides } from '../../engine/overrideEngine';
@@ -49,6 +50,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const [editModal, setEditModal] = useState(null);
   const [isBulkMode, setIsBulkMode] = useState(false);
   const [activeFocus, setActiveFocus] = useState(null);
+  const [showSearchBar, setShowSearchBar] = useState(false);
 
   const overridesRef = useRef(hasSaved ? saved.overrides || {} : {});
   const selectedRecipesRef = useRef(hasSaved ? saved.selectedRecipes || {} : {});
@@ -85,6 +87,19 @@ export default function SatisfactoryCanvas({ recipesData }) {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [isBulkMode]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === ' ' && !showSearchBar) {
+        const tag = document.activeElement?.tagName?.toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || document.activeElement?.contentEditable === 'true') return;
+        e.preventDefault();
+        setShowSearchBar(true);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [showSearchBar]);
 
   const onConnect = useCallback((params) => {
     setEdges(eds => addEdge({
@@ -283,7 +298,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
     ));
   }, [setNodes]);
 
-  const handleAddTextNode = useCallback(() => {
+  const handleAddTextNode = useCallback((options = {}) => {
     const id = `text_${Date.now()}`;
     const viewport = rfInstanceRef.current?.getViewport() || { x: 0, y: 0, zoom: 1 };
     const newNode = {
@@ -294,14 +309,14 @@ export default function SatisfactoryCanvas({ recipesData }) {
         y: (-viewport.y + window.innerHeight / 2) / viewport.zoom,
       },
       data: {
-        text: 'Not ekle...',
+        text: options.text || 'Not ekle...',
         font: 'Excalifont',
         size: 'M',
         color: '#e2e8f0',
         align: 'left',
         opacity: 1,
-        imageUrl: null,
-        imagePosition: 'top',
+        imageUrl: options.imageUrl || null,
+        imagePosition: options.imageUrl ? 'top' : 'top',
         onChange: handleTextNodeChange,
         onDelete: handleDeleteNodeRef.current,
       },
@@ -352,6 +367,10 @@ export default function SatisfactoryCanvas({ recipesData }) {
     setNodes(prev => [...prev, ...nodesWithCallbacks]);
     setEdges(prev => [...prev, ...routedEdges]);
   }, [recipes, itemsMap, setNodes, setEdges]);
+
+  const handleAddNoteWithImage = useCallback(({ imageUrl, text }) => {
+    handleAddTextNode({ imageUrl, text });
+  }, [handleAddTextNode]);
 
   const handlePaneContextMenu = useCallback((event) => {
     event.preventDefault();
@@ -848,6 +867,15 @@ export default function SatisfactoryCanvas({ recipesData }) {
         />
       )}
 
+      <SearchBar
+        isOpen={showSearchBar}
+        onClose={() => setShowSearchBar(false)}
+        recipes={recipes}
+        itemsMap={itemsMap}
+        onAddProduction={handleAddProduction}
+        onAddNoteWithImage={handleAddNoteWithImage}
+      />
+
       {nodes.length === 0 && (
         <div style={{
           position: 'fixed',
@@ -865,9 +893,9 @@ export default function SatisfactoryCanvas({ recipesData }) {
           }}>
             Canvas Boş
           </div>
-          <div style={{ fontSize: 14, color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
-            Üstteki <strong style={{ color: 'var(--color-primary)' }}>Üretim Hattı Ekle</strong> butonuna tıkla<br />
-            veya canvas'a <strong style={{ color: 'var(--color-text-dim)' }}>sağ tıkla</strong>
+          <div style={{ fontSize: 16, color: 'var(--color-text-muted)', lineHeight: 1.8 }}>
+            Kullanmaya başlamak için <strong style={{ color: 'var(--color-primary)' }}>Space</strong> tuşunu<br />
+            veya <strong style={{ color: 'var(--color-primary)' }}>Üretim Hattı Ekle</strong> butonunu kullanın
           </div>
         </div>
       )}
