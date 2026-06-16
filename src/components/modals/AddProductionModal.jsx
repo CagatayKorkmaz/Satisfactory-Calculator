@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { isAlternateRecipe } from '../../engine/recipeEngine';
+import { isAlternateRecipe, getAllProducibleItems, RAW_RESOURCES } from '../../engine/recipeEngine';
 
 /**
  * AddProductionModal — Üretim hattı ekleme modalı.
  * recipes.json'dan ürün seçimi ve hedef miktar girişi.
+ * Artık yan ürünleri de (byproduct) listede gösterir.
  */
 export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClose }) {
   const [search, setSearch] = useState('');
@@ -11,19 +12,17 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
   const [targetAmount, setTargetAmount] = useState(1);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
-  // Her ürünü tek göster (alternatifler ve unpackage tarifleri hariç)
+  const allItems = useMemo(() => {
+    return getAllProducibleItems(recipes).filter(r => !RAW_RESOURCES.includes(r.item));
+  }, [recipes]);
+
   const filteredRecipes = useMemo(() => {
     const q = search.toLowerCase();
-    const seen = new Set();
-    return recipes.filter(r => {
-      if (isAlternateRecipe(r)) return false;
-      if (r.id.startsWith('unpackage')) return false;
-      if (!r.item.toLowerCase().includes(q)) return false;
-      if (seen.has(r.item)) return false;
-      seen.add(r.item);
-      return true;
+    return allItems.filter(r => {
+      const matches = r.item.toLowerCase().includes(q);
+      return matches && (r.isByproduct || !isAlternateRecipe(r));
     });
-  }, [recipes, search]);
+  }, [allItems, search]);
 
   const handleConfirm = useCallback(() => {
     if (!selectedItem) return;
@@ -143,7 +142,10 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
                   <div style={{ flex: 1 }}>
                     <div className="item-name">{recipe.item}</div>
                     <div className="item-meta">
-                      {recipe.machine} · {recipe.output_per_min}/dk
+                      {recipe.isByproduct
+                        ? `Yan ürün (${recipe.sourceRecipe || 'Çeşitli'})`
+                        : `${recipe.machine || ''} · ${recipe.output_per_min}/dk`
+                      }
                     </div>
                   </div>
                   {isSelected && (
@@ -175,8 +177,13 @@ export default function AddProductionModal({ recipes, itemsMap, onConfirm, onClo
               onChange={e => setTargetAmount(e.target.value)}
             />
             <div style={{ marginTop: 6, fontSize: 12, color: 'var(--color-text-muted)' }}>
-              Standart çıktı: {selectedItem.output_per_min}/dk · 
-              Gereken makine: {Math.ceil(targetAmount / selectedItem.output_per_min)}×
+              {selectedItem.isByproduct
+                ? `Yan ürün kaynağı: ${selectedItem.sourceRecipe || 'Çeşitli'}`
+                : `Standart çıktı: ${selectedItem.output_per_min}/dk`
+              } · 
+              Gereken makine: {selectedItem.output_per_min > 0
+                ? `${Math.ceil(targetAmount / selectedItem.output_per_min)}×`
+                : '—'}
             </div>
           </div>
         )}

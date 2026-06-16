@@ -1,3 +1,8 @@
+export const RAW_RESOURCES = [
+  'Iron Ore', 'Copper Ore', 'Limestone', 'Coal', 'Crude Oil', 'Water',
+  'Bauxite', 'Raw Quartz', 'Sulfur', 'Uranium', 'Nitrogen Gas', 'SAM',
+];
+
 const CATEGORY_COLORS = {
   raw: '#d97706',
   ingot: '#64748b',
@@ -131,7 +136,78 @@ export function findRecipe(itemName, recipes, selectedRecipeName) {
   }
   const realRecipes = recipesForItem.filter(r => !isAlternateRecipe(r) && !r.id.startsWith('unpackage'));
   if (realRecipes.length > 0) return realRecipes[0];
+  const altRecipes = recipesForItem.filter(r => isAlternateRecipe(r) && !r.id.startsWith('unpackage'));
+  if (altRecipes.length > 0) return altRecipes[0];
   return null;
+}
+
+export function recipeProducesItem(recipe, itemName) {
+  if (getRecipeItem(recipe) === itemName) return true;
+  if ((recipe.byproducts || []).some(bp => bp.item === itemName)) return true;
+  return false;
+}
+
+export function findRecipeProducing(itemName, recipes, selectedRecipeName) {
+  const direct = findRecipe(itemName, recipes, selectedRecipeName);
+  if (direct) return direct;
+  const byproductSources = recipes.filter(r =>
+    (r.byproducts || []).some(bp => bp.item === itemName)
+  );
+  if (byproductSources.length > 0) return byproductSources[0];
+  return null;
+}
+
+export function getAllProducibleItems(recipes) {
+  const seen = new Set();
+  const items = [];
+
+  recipes.forEach(r => {
+    const main = getRecipeItem(r);
+    const isAlt = isAlternateRecipe(r);
+    if (main && !seen.has(main) && !isAlt && !r.id.startsWith('unpackage')) {
+      seen.add(main);
+      items.push({
+        item: main,
+        output_per_min: r.output_per_min || (r.products?.[0]?.amount_per_min) || 0,
+        machine: r.machine || null,
+        id: r.id,
+        isByproduct: false,
+      });
+    }
+  });
+
+  recipes.forEach(r => {
+    (r.byproducts || []).forEach(bp => {
+      if (bp.item && !seen.has(bp.item)) {
+        seen.add(bp.item);
+        items.push({
+          item: bp.item,
+          output_per_min: bp.amount_per_min || 0,
+          machine: r.machine || null,
+          id: `bp_${r.id}_${bp.item.replace(/\s+/g, '_')}`,
+          isByproduct: true,
+          sourceRecipe: r.item,
+        });
+      }
+    });
+  });
+
+  recipes.forEach(r => {
+    const main = getRecipeItem(r);
+    const isAlt = isAlternateRecipe(r);
+    if (main && !seen.has(main) && isAlt && !r.id.startsWith('unpackage')) {
+      seen.add(main);
+      items.push({
+        item: main,
+        output_per_min: r.output_per_min || 0,
+        machine: r.machine || null,
+        id: r.id,
+        isByproduct: false,
+      });
+    }
+  });
+
+  return items;
 }
 
 function getRecipeItem(recipe) {
@@ -201,7 +277,7 @@ function accumulateAmounts(item, amount, recipes, pathVisited, amounts, selected
 function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx, selectedRecipes) {
   let entry = nodeMap.get(item);
   const recipe = findRecipe(item, recipes, selectedRecipes?.[item]);
-  const isRawResource = !recipe;
+  const isRawResource = RAW_RESOURCES.includes(item);
 
   if (!entry) {
     const totalAmount = amounts.get(item) || amount;
@@ -265,9 +341,6 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
 
     if (!isRawResource && recipe) {
       const sf = getScaleFactor(recipe, totalAmount);
-      (recipe.ingredients || []).forEach(ing => {
-        buildGraph(ing.item, ing.amount_per_min * sf, nodeId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx, selectedRecipes);
-      });
 
       const byproducts = getRecipeByproducts(recipe, sf, itemsMap);
       if (byproducts.length > 0) {
@@ -320,10 +393,18 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
           }
         });
       }
+
+      (recipe.ingredients || []).forEach(ing => {
+        const ingAmount = ing.amount_per_min * sf;
+        const remainder = consumeFromByproducts(ing.item, ingAmount, nodeId, nodeIdPrefix, nodeMap, edges, edgeSet, edgeHandleIdx);
+        if (remainder > 0) {
+          buildGraph(ing.item, remainder, nodeId, nodeIdPrefix, recipes, itemsMap, amounts, nodeMap, edges, edgeSet, edgeHandleIdx, selectedRecipes);
+        }
+      });
     }
   }
 
-  if (parentId) {
+  if (parentId && entry) {
     const edgeId = `edge_${parentId}_${entry.nodeId}`;
     if (!edgeSet.has(edgeId)) {
       edgeSet.add(edgeId);
@@ -356,6 +437,57 @@ function buildGraph(item, amount, parentId, nodeIdPrefix, recipes, itemsMap, amo
       });
     }
   }
+}
+
+function consumeFromByproducts(itemName, neededAmount, parentNodeId, nodeIdPrefix, nodeMap, edges, edgeSet, edgeHandleIdx) {
+  let remaining = neededAmount;
+
+  for (const [key, val] of nodeMap.entries()) {
+    if (key.startsWith(nodeIdPrefix) && val.node.type === 'byproductNode' && val.node.data.itemName === itemName) {
+      const bpAmount = val.node.data.requiredAmount;
+      if (bpAmount <= 0) continue;
+
+      const usedAmount = Math.min(remaining, bpAmount);
+      if (usedAmount <= 0) continue;
+
+      remaining -= usedAmount;
+      val.node.data.requiredAmount -= usedAmount;
+
+      const edgeId = `edge_bp_${val.nodeId}_${parentNodeId}`;
+      if (!edgeSet.has(edgeId)) {
+        edgeSet.add(edgeId);
+
+        const sourceIdx = (edgeHandleIdx.source.get(val.nodeId) || 0);
+        edgeHandleIdx.source.set(val.nodeId, sourceIdx + 1);
+        const targetIdx = (edgeHandleIdx.target.get(parentNodeId) || 0);
+        edgeHandleIdx.target.set(parentNodeId, targetIdx + 1);
+
+        const bpEdgeColor = val.node.data.category ? getEdgeColor(val.node.data.category) : '#c084fc';
+
+        edges.push({
+          id: edgeId,
+          source: val.nodeId,
+          target: parentNodeId,
+          sourceHandle: `source-${sourceIdx}`,
+          targetHandle: `target-${targetIdx}`,
+          type: 'default',
+          animated: false,
+          data: { flowRate: usedAmount, category: val.node.data.category, isByproduct: true, edgeColor: bpEdgeColor },
+          style: { stroke: bpEdgeColor, strokeWidth: 2, opacity: 0.7, strokeDasharray: '6 3' },
+          markerEnd: { type: 'arrowclosed', width: 14, height: 14, color: bpEdgeColor },
+          label: `${itemName} ${usedAmount % 1 === 0 ? usedAmount.toString() : usedAmount.toFixed(3).replace(/\.?0+$/, '')}/dk`,
+          labelStyle: { fill: '#c084fc', fontWeight: 600, fontSize: 13, fontFamily: 'Share Tech Mono, monospace' },
+          labelBgStyle: { fill: '#0a0e1a' },
+          labelBgPadding: [6, 3],
+          labelBgBorderRadius: 4,
+        });
+      }
+
+      if (remaining <= 0) break;
+    }
+  }
+
+  return remaining;
 }
 
 export function buildProductionTree(targetItem, targetAmount, recipes, itemsMap, options = {}) {

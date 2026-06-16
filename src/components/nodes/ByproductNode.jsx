@@ -2,13 +2,15 @@ import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
 const ByproductNode = memo(({ id, data, selected }) => {
-  const { itemName, icon, standardAmount, onDelete } = data;
+  const { itemName, icon, standardAmount, outputCount = 0, onDelete } = data;
 
   const formatAmount = (value) => {
     if (value == null) return '';
     if (value % 1 === 0) return value.toString();
     return value.toFixed(3).replace(/\.?0+$/, '');
   };
+
+  const hasOutputs = outputCount > 0;
 
   return (
     <div
@@ -49,6 +51,20 @@ const ByproductNode = memo(({ id, data, selected }) => {
         id="target-0"
         style={{ background: '#c084fc', bottom: -4 }}
       />
+
+      {hasOutputs && Array.from({ length: outputCount }, (_, i) => {
+        const count = Math.max(1, outputCount);
+        const left = count === 1 ? '50%' : `${10 + (i / (count - 1)) * 80}%`;
+        return (
+          <Handle
+            key={`source-${i}`}
+            type="source"
+            position={Position.Top}
+            id={`source-${i}`}
+            style={{ background: '#c084fc', left, top: -4 }}
+          />
+        );
+      })}
     </div>
   );
 });

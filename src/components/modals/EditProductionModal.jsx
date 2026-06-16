@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { isAlternateRecipe } from '../../engine/recipeEngine';
+import { isAlternateRecipe, getAllProducibleItems, RAW_RESOURCES } from '../../engine/recipeEngine';
 
 /**
  * EditProductionModal — Üretim ağacını düzenleme modalı.
@@ -24,18 +24,17 @@ export default function EditProductionModal({
   const [capacityInput, setCapacityInput] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
+  const allItems = useMemo(() => {
+    return getAllProducibleItems(recipes).filter(r => !RAW_RESOURCES.includes(r.item));
+  }, [recipes]);
+
   const filteredRecipes = useMemo(() => {
     const q = search.toLowerCase();
-    const seen = new Set();
-    return recipes.filter(r => {
-      if (isAlternateRecipe(r)) return false;
-      if (r.id.startsWith('unpackage')) return false;
-      if (!r.item.toLowerCase().includes(q)) return false;
-      if (seen.has(r.item)) return false;
-      seen.add(r.item);
-      return true;
+    return allItems.filter(r => {
+      const matches = r.item.toLowerCase().includes(q);
+      return matches && (r.isByproduct || !isAlternateRecipe(r));
     });
-  }, [recipes, search]);
+  }, [allItems, search]);
 
   const handleConfirm = useCallback(() => {
     if (mode === 'changeItem') {
@@ -180,7 +179,10 @@ export default function EditProductionModal({
                       <div style={{ flex: 1 }}>
                         <div className="item-name">{recipe.item}</div>
                         <div className="item-meta">
-                          {recipe.machine} · {recipe.output_per_min}/dk
+                          {recipe.isByproduct
+                            ? `Yan ürün (${recipe.sourceRecipe || 'Çeşitli'})`
+                            : `${recipe.machine || ''} · ${recipe.output_per_min}/dk`
+                          }
                         </div>
                       </div>
                       {isSelected && (
@@ -218,8 +220,13 @@ export default function EditProductionModal({
             />
             {mode === 'changeItem' && selectedItem && (
               <div style={{ marginTop: 6, fontSize: 12, color: 'var(--color-text-muted)' }}>
-                Standart çıktı: {selectedItem.output_per_min}/dk ·
-                Gereken makine: {Math.ceil(targetAmount / selectedItem.output_per_min)}×
+                {selectedItem.isByproduct
+                  ? `Yan ürün kaynağı: ${selectedItem.sourceRecipe || 'Çeşitli'}`
+                  : `Standart çıktı: ${selectedItem.output_per_min}/dk`
+                } ·
+                Gereken makine: {selectedItem.output_per_min > 0
+                  ? `${Math.ceil(targetAmount / selectedItem.output_per_min)}×`
+                  : '—'}
               </div>
             )}
           </div>
