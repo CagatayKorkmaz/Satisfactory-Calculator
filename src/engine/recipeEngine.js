@@ -1,6 +1,6 @@
 export const RAW_RESOURCES = [
   'Iron Ore', 'Copper Ore', 'Limestone', 'Coal', 'Crude Oil', 'Water',
-  'Bauxite', 'Raw Quartz', 'Sulfur', 'Uranium', 'Nitrogen Gas', 'SAM',
+  'Bauxite', 'Raw Quartz', 'Sulfur', 'Uranium', 'Nitrogen Gas', 'SAM', 'Caterium Ore',
 ];
 
 const CATEGORY_COLORS = {
@@ -97,6 +97,9 @@ const ALT_RECIPE_NAMES = {
   'alt_iron_pipe': 'Iron Pipe',
   'alt_molded_steel_pipe': 'Molded Steel Pipe',
   'alt_darkionfuel': 'Dark-Ion Fuel',
+  'alt_nitrorocketfuel': 'Nitro Rocket Fuel',
+  'alt_leachedcateriumingot': 'Leached Caterium Ingot',
+  'alt_temperedcateriumingot': 'Tempered Caterium Ingot',
   // Variant recipes (non-alt, but different from primary)
   'residualrubber': 'Residual Rubber',
   'residualplastic': 'Residual Plastic',
@@ -203,6 +206,21 @@ export function getAllProducibleItems(recipes) {
   });
 
   recipes.forEach(r => {
+    const main = getRecipeItem(r);
+    const isAlt = isAlternateRecipe(r);
+    if (main && !seen.has(main) && isAlt && !r.id.startsWith('unpackage')) {
+      seen.add(main);
+      items.push({
+        item: main,
+        output_per_min: r.output_per_min || 0,
+        machine: r.machine || null,
+        id: r.id,
+        isByproduct: false,
+      });
+    }
+  });
+
+  recipes.forEach(r => {
     (r.byproducts || []).forEach(bp => {
       if (bp.item && !seen.has(bp.item)) {
         seen.add(bp.item);
@@ -216,21 +234,6 @@ export function getAllProducibleItems(recipes) {
         });
       }
     });
-  });
-
-  recipes.forEach(r => {
-    const main = getRecipeItem(r);
-    const isAlt = isAlternateRecipe(r);
-    if (main && !seen.has(main) && isAlt && !r.id.startsWith('unpackage')) {
-      seen.add(main);
-      items.push({
-        item: main,
-        output_per_min: r.output_per_min || 0,
-        machine: r.machine || null,
-        id: r.id,
-        isByproduct: false,
-      });
-    }
   });
 
   return items;

@@ -1404,6 +1404,38 @@
       ]
     },
     {
+      "id": "alt_leachedcateriumingot",
+      "item": "Caterium Ingot",
+      "output_per_min": 36,
+      "machine": "Refinery",
+      "ingredients": [
+        {
+          "item": "Caterium Ore",
+          "amount_per_min": 54
+        },
+        {
+          "item": "Sulfuric Acid",
+          "amount_per_min": 30
+        }
+      ]
+    },
+    {
+      "id": "alt_temperedcateriumingot",
+      "item": "Caterium Ingot",
+      "output_per_min": 22.5,
+      "machine": "Foundry",
+      "ingredients": [
+        {
+          "item": "Caterium Ore",
+          "amount_per_min": 45
+        },
+        {
+          "item": "Petroleum Coke",
+          "amount_per_min": 15
+        }
+      ]
+    },
+    {
       "id": "circuitboard",
       "item": "Circuit Board",
       "output_per_min": 7.5,
@@ -4428,6 +4460,36 @@
         {
           "item": "Compacted Coal",
           "amount_per_min": 10
+        }
+      ]
+    },
+    {
+      "id": "alt_nitrorocketfuel",
+      "item": "Rocket Fuel",
+      "output_per_min": 150,
+      "machine": "Blender",
+      "ingredients": [
+        {
+          "item": "Fuel",
+          "amount_per_min": 100
+        },
+        {
+          "item": "Nitrogen Gas",
+          "amount_per_min": 75
+        },
+        {
+          "item": "Sulfur",
+          "amount_per_min": 100
+        },
+        {
+          "item": "Coal",
+          "amount_per_min": 50
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Compacted Coal",
+          "amount_per_min": 25
         }
       ]
     },
