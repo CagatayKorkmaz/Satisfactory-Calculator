@@ -743,6 +743,19 @@ export default function SatisfactoryCanvas({ recipesData }) {
               Hedef Üretimi Değiştir
             </div>
           )}
+          <div className="context-menu-divider" />
+          <div
+            className="context-menu-item"
+            id="ctx-wiki"
+            onClick={() => {
+              closeNodeContextMenu();
+              const wikiName = nodeContextMenu.itemName.replace(/ /g, '_').replace(/™/g, '');
+              window.open(`https://satisfactory.fandom.com/wiki/${encodeURIComponent(wikiName)}`, '_blank');
+            }}
+          >
+            <span className="icon">🌐</span>
+            Wiki'de Göster
+          </div>
         </div>
       )}
 
