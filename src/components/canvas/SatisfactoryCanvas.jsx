@@ -18,6 +18,7 @@ import RawNode from '../nodes/RawNode';
 import ByproductNode from '../nodes/ByproductNode';
 import AddProductionModal from '../modals/AddProductionModal';
 import EditProductionModal from '../modals/EditProductionModal';
+import AboutModal from '../modals/AboutModal';
 import NoteFormattingBar from './NoteFormattingBar';
 
 import { buildProductionTree, generateTreeId } from '../../engine/recipeEngine';
@@ -42,6 +43,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(hasSaved ? saved.nodes : []);
   const [edges, setEdges, onEdgesChange] = useEdgesState(hasSaved ? saved.edges : []);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
   const [nodeContextMenu, setNodeContextMenu] = useState(null);
   const [editModal, setEditModal] = useState(null);
@@ -768,6 +770,10 @@ export default function SatisfactoryCanvas({ recipesData }) {
         />
       )}
 
+      {showAboutModal && (
+        <AboutModal onClose={() => setShowAboutModal(false)} />
+      )}
+
       {editModal && (
         <EditProductionModal
           recipes={recipes}
@@ -782,16 +788,19 @@ export default function SatisfactoryCanvas({ recipesData }) {
       )}
 
       <div className="toolbar glass-panel">
-        <div style={{
-          fontSize: 22, marginRight: 4,
-          filter: 'drop-shadow(0 0 8px rgba(240,165,0,0.6))'
-        }}>
-          ⚙️
-        </div>
-        <span style={{
-          fontSize: 14, fontWeight: 700, color: 'var(--color-primary)',
-          marginRight: 8, letterSpacing: '-0.02em'
-        }}>
+        <span
+          onClick={() => setShowAboutModal(true)}
+          style={{
+            fontSize: 14, fontWeight: 700, color: 'var(--color-primary)',
+            marginRight: 8, letterSpacing: '-0.02em',
+            filter: 'drop-shadow(0 0 8px rgba(240,165,0,0.6))',
+            cursor: 'pointer',
+            transition: 'opacity 150ms ease',
+            userSelect: 'none',
+          }}
+          onMouseEnter={(e) => e.target.style.opacity = '0.8'}
+          onMouseLeave={(e) => e.target.style.opacity = '1'}
+        >
           Satisfactory
         </span>
         <div className="toolbar-divider" />
