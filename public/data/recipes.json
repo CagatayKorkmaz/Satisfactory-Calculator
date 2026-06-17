@@ -2508,18 +2508,50 @@
       ]
     },
     {
-      "id": "alt_ingotiron",
+      "id": "alt_basic_iron_ingot",
       "item": "Iron Ingot",
       "output_per_min": 50,
       "machine": "Foundry",
       "ingredients": [
         {
           "item": "Iron Ore",
-          "amount_per_min": 20
+          "amount_per_min": 25
+        },
+        {
+          "item": "Limestone",
+          "amount_per_min": 40
+        }
+      ]
+    },
+    {
+      "id": "alt_ingotiron",
+      "item": "Iron Ingot",
+      "output_per_min": 75,
+      "machine": "Foundry",
+      "ingredients": [
+        {
+          "item": "Iron Ore",
+          "amount_per_min": 40
         },
         {
           "item": "Copper Ore",
-          "amount_per_min": 20
+          "amount_per_min": 10
+        }
+      ]
+    },
+    {
+      "id": "alt_leached_iron_ingot",
+      "item": "Iron Ingot",
+      "output_per_min": 100,
+      "machine": "Refinery",
+      "ingredients": [
+        {
+          "item": "Iron Ore",
+          "amount_per_min": 50
+        },
+        {
+          "item": "Sulfuric Acid",
+          "amount_per_min": 10
         }
       ]
     },
