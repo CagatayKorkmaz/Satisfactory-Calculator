@@ -10,6 +10,11 @@
       "icon": "/images/items/AI_Limiter.png",
       "category": "component"
     },
+    "AI Expansion Server": {
+      "name": "AI Expansion Server",
+      "icon": "/images/items/AI_Expansion_Server.png",
+      "category": "part"
+    },
     "Alclad Aluminum Sheet": {
       "name": "Alclad Aluminum Sheet",
       "icon": "/images/items/Alclad_Aluminum_Sheet.png",
@@ -23,6 +28,11 @@
     "Alien Protein": {
       "name": "Alien Protein",
       "icon": "/images/items/Alien_Protein.png",
+      "category": "component"
+    },
+    "Alien Power Matrix": {
+      "name": "Alien Power Matrix",
+      "icon": "/images/items/Alien_Power_Matrix.png",
       "category": "component"
     },
     "Alumina Solution": {
@@ -60,6 +70,11 @@
       "icon": "/images/items/Bacon_Agaric.png",
       "category": "component"
     },
+    "Ballistic Warp Drive": {
+      "name": "Ballistic Warp Drive",
+      "icon": "/images/items/Ballistic_Warp_Drive.png",
+      "category": "part"
+    },
     "Battery": {
       "name": "Battery",
       "icon": "/images/items/Battery.png",
@@ -79,6 +94,11 @@
       "name": "Beryl Nut",
       "icon": "/images/items/Beryl_Nut.png",
       "category": "component"
+    },
+    "Biochemical Sculptor": {
+      "name": "Biochemical Sculptor",
+      "icon": "/images/items/Biochemical_Sculptor.png",
+      "category": "part"
     },
     "Biomass": {
       "name": "Biomass",
@@ -400,6 +420,11 @@
       "icon": "/images/items/Mycelia.png",
       "category": "component"
     },
+    "Neural-Quantum Processor": {
+      "name": "Neural-Quantum Processor",
+      "icon": "/images/items/Neural_Quantum_Processor.png",
+      "category": "component"
+    },
     "Nitric Acid": {
       "name": "Nitric Acid",
       "icon": "/images/items/Nitric_Acid.png",
@@ -580,6 +605,11 @@
       "icon": "/images/items/Raw_Quartz.png",
       "category": "raw"
     },
+    "Reanimated SAM": {
+      "name": "Reanimated SAM",
+      "icon": "/images/items/Reanimated_SAM.png",
+      "category": "ingot"
+    },
     "Rebar Gun": {
       "name": "Rebar Gun",
       "icon": "/images/items/Rebar_Gun.png",
@@ -610,6 +640,16 @@
       "icon": "/images/items/Rubber.png",
       "category": "component"
     },
+    "SAM": {
+      "name": "SAM",
+      "icon": "/images/items/SAM.png",
+      "category": "raw"
+    },
+    "SAM Fluctuator": {
+      "name": "SAM Fluctuator",
+      "icon": "/images/items/SAM_Fluctuator.png",
+      "category": "component"
+    },
     "Screw": {
       "name": "Screw",
       "icon": "/images/items/Screw.png",
@@ -623,6 +663,11 @@
     "Silica": {
       "name": "Silica",
       "icon": "/images/items/Silica.png",
+      "category": "component"
+    },
+    "Singularity Cell": {
+      "name": "Singularity Cell",
+      "icon": "/images/items/Singularity_Cell.png",
       "category": "component"
     },
     "Smart Plating": {
@@ -685,10 +730,20 @@
       "icon": "/images/items/Supercomputer.png",
       "category": "component"
     },
+    "Superposition Oscillator": {
+      "name": "Superposition Oscillator",
+      "icon": "/images/items/Superposition_Oscillator.png",
+      "category": "component"
+    },
     "Thermal Propulsion Rocket": {
       "name": "Thermal Propulsion Rocket",
       "icon": "/images/items/Thermal_Propulsion_Rocket.png",
       "category": "part"
+    },
+    "Time Crystal": {
+      "name": "Time Crystal",
+      "icon": "/images/items/Time_Crystal.png",
+      "category": "component"
     },
     "Turbo Motor": {
       "name": "Turbo Motor",
@@ -783,6 +838,41 @@
     "Dark Matter Crystal": {
       "name": "Dark Matter Crystal",
       "icon": "/images/items/Dark_Matter_Crystal.png",
+      "category": "component"
+    },
+    "Dark Matter Residue": {
+      "name": "Dark Matter Residue",
+      "icon": "/images/items/Dark_Matter_Residue.png",
+      "category": "fluid"
+    },
+    "Diamonds": {
+      "name": "Diamonds",
+      "icon": "/images/items/Diamonds.png",
+      "category": "component"
+    },
+    "Excited Photonic Matter": {
+      "name": "Excited Photonic Matter",
+      "icon": "/images/items/Excited_Photonic_Matter.png",
+      "category": "fluid"
+    },
+    "Ficsite Ingot": {
+      "name": "Ficsite Ingot",
+      "icon": "/images/items/Ficsite_Ingot.png",
+      "category": "ingot"
+    },
+    "Ficsite Trigon": {
+      "name": "Ficsite Trigon",
+      "icon": "/images/items/Ficsite_Trigon.png",
+      "category": "component"
+    },
+    "Ficsonium": {
+      "name": "Ficsonium",
+      "icon": "/images/items/Ficsonium.png",
+      "category": "component"
+    },
+    "Ficsonium Fuel Rod": {
+      "name": "Ficsonium Fuel Rod",
+      "icon": "/images/items/Ficsonium_Fuel_Rod.png",
       "category": "component"
     }
   },
@@ -1710,20 +1800,20 @@
     {
       "id": "alt_coolingdevice",
       "item": "Cooling System",
-      "output_per_min": 3.75,
+      "output_per_min": 5,
       "machine": "Blender",
       "ingredients": [
         {
           "item": "Heat Sink",
-          "amount_per_min": 9.375
+          "amount_per_min": 10
         },
         {
           "item": "Motor",
-          "amount_per_min": 1.875
+          "amount_per_min": 2.5
         },
         {
           "item": "Nitrogen Gas",
-          "amount_per_min": 45
+          "amount_per_min": 60
         }
       ]
     },
@@ -1961,11 +2051,11 @@
       "ingredients": [
         {
           "item": "Steel Beam",
-          "amount_per_min": 24
+          "amount_per_min": 18
         },
         {
           "item": "Concrete",
-          "amount_per_min": 30
+          "amount_per_min": 36
         }
       ]
     },
@@ -1977,7 +2067,7 @@
       "ingredients": [
         {
           "item": "Steel Pipe",
-          "amount_per_min": 28
+          "amount_per_min": 24
         },
         {
           "item": "Concrete",
@@ -3902,16 +3992,16 @@
     {
       "id": "alt_ingotsteel_2",
       "item": "Steel Ingot",
-      "output_per_min": 37.5,
+      "output_per_min": 10,
       "machine": "Foundry",
       "ingredients": [
         {
           "item": "Iron Ore",
-          "amount_per_min": 22.5
+          "amount_per_min": 5
         },
         {
           "item": "Compacted Coal",
-          "amount_per_min": 11.25
+          "amount_per_min": 2.5
         }
       ]
     },
@@ -4634,6 +4724,495 @@
         {
           "item": "Compacted Coal",
           "amount_per_min": 40
+        }
+      ]
+    },
+    {
+      "id": "reanimatedsam",
+      "item": "Reanimated SAM",
+      "output_per_min": 30,
+      "machine": "Constructor",
+      "ingredients": [
+        {
+          "item": "SAM",
+          "amount_per_min": 120
+        }
+      ]
+    },
+    {
+      "id": "samfluctuator",
+      "item": "SAM Fluctuator",
+      "output_per_min": 10,
+      "machine": "Manufacturer",
+      "ingredients": [
+        {
+          "item": "Reanimated SAM",
+          "amount_per_min": 60
+        },
+        {
+          "item": "Wire",
+          "amount_per_min": 50
+        },
+        {
+          "item": "Steel Pipe",
+          "amount_per_min": 30
+        }
+      ]
+    },
+    {
+      "id": "diamonds",
+      "item": "Diamonds",
+      "output_per_min": 30,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Coal",
+          "amount_per_min": 600
+        }
+      ]
+    },
+    {
+      "id": "alt_cloudydiamonds",
+      "item": "Diamonds",
+      "output_per_min": 20,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Coal",
+          "amount_per_min": 240
+        },
+        {
+          "item": "Limestone",
+          "amount_per_min": 480
+        }
+      ]
+    },
+    {
+      "id": "alt_oilbaseddiamonds",
+      "item": "Diamonds",
+      "output_per_min": 40,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Crude Oil",
+          "amount_per_min": 200
+        }
+      ]
+    },
+    {
+      "id": "alt_petroleumdiamonds",
+      "item": "Diamonds",
+      "output_per_min": 30,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Petroleum Coke",
+          "amount_per_min": 720
+        }
+      ]
+    },
+    {
+      "id": "alt_pinkdiamonds",
+      "item": "Diamonds",
+      "output_per_min": 15,
+      "machine": "Converter",
+      "ingredients": [
+        {
+          "item": "Coal",
+          "amount_per_min": 120
+        },
+        {
+          "item": "Quartz Crystal",
+          "amount_per_min": 45
+        }
+      ]
+    },
+    {
+      "id": "alt_turbodiamonds",
+      "item": "Diamonds",
+      "output_per_min": 60,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Coal",
+          "amount_per_min": 600
+        },
+        {
+          "item": "Packaged Turbofuel",
+          "amount_per_min": 40
+        }
+      ]
+    },
+    {
+      "id": "timecrystal",
+      "item": "Time Crystal",
+      "output_per_min": 6,
+      "machine": "Converter",
+      "ingredients": [
+        {
+          "item": "Diamonds",
+          "amount_per_min": 12
+        }
+      ]
+    },
+    {
+      "id": "excitedphotonics",
+      "item": "Excited Photonic Matter",
+      "output_per_min": 200,
+      "machine": "Converter",
+      "ingredients": []
+    },
+    {
+      "id": "darkmatterresidue",
+      "item": "Dark Matter Residue",
+      "output_per_min": 100,
+      "machine": "Converter",
+      "ingredients": [
+        {
+          "item": "Reanimated SAM",
+          "amount_per_min": 50
+        }
+      ]
+    },
+    {
+      "id": "darkmattercrystal",
+      "item": "Dark Matter Crystal",
+      "output_per_min": 30,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Diamonds",
+          "amount_per_min": 30
+        },
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 150
+        }
+      ]
+    },
+    {
+      "id": "alt_darkmattercrystallization",
+      "item": "Dark Matter Crystal",
+      "output_per_min": 20,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 200
+        }
+      ]
+    },
+    {
+      "id": "alt_darkmattertrap",
+      "item": "Dark Matter Crystal",
+      "output_per_min": 60,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Time Crystal",
+          "amount_per_min": 30
+        },
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 150
+        }
+      ]
+    },
+    {
+      "id": "ficsiteingotaluminum",
+      "item": "Ficsite Ingot",
+      "output_per_min": 30,
+      "machine": "Converter",
+      "ingredients": [
+        {
+          "item": "Reanimated SAM",
+          "amount_per_min": 60
+        },
+        {
+          "item": "Aluminum Ingot",
+          "amount_per_min": 120
+        }
+      ]
+    },
+    {
+      "id": "ficsiteingotcaterium",
+      "item": "Ficsite Ingot",
+      "output_per_min": 15,
+      "machine": "Converter",
+      "ingredients": [
+        {
+          "item": "Reanimated SAM",
+          "amount_per_min": 45
+        },
+        {
+          "item": "Caterium Ingot",
+          "amount_per_min": 60
+        }
+      ]
+    },
+    {
+      "id": "ficsiteingotiron",
+      "item": "Ficsite Ingot",
+      "output_per_min": 10,
+      "machine": "Converter",
+      "ingredients": [
+        {
+          "item": "Reanimated SAM",
+          "amount_per_min": 40
+        },
+        {
+          "item": "Iron Ingot",
+          "amount_per_min": 240
+        }
+      ]
+    },
+    {
+      "id": "ficsitetrigon",
+      "item": "Ficsite Trigon",
+      "output_per_min": 30,
+      "machine": "Constructor",
+      "ingredients": [
+        {
+          "item": "Ficsite Ingot",
+          "amount_per_min": 10
+        }
+      ]
+    },
+    {
+      "id": "superpositionoscillator",
+      "item": "Superposition Oscillator",
+      "output_per_min": 5,
+      "machine": "Quantum Encoder",
+      "ingredients": [
+        {
+          "item": "Dark Matter Crystal",
+          "amount_per_min": 30
+        },
+        {
+          "item": "Crystal Oscillator",
+          "amount_per_min": 5
+        },
+        {
+          "item": "Alclad Aluminum Sheet",
+          "amount_per_min": 45
+        },
+        {
+          "item": "Excited Photonic Matter",
+          "amount_per_min": 125
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 125
+        }
+      ]
+    },
+    {
+      "id": "neuralquantumprocessor",
+      "item": "Neural-Quantum Processor",
+      "output_per_min": 3,
+      "machine": "Quantum Encoder",
+      "ingredients": [
+        {
+          "item": "Time Crystal",
+          "amount_per_min": 15
+        },
+        {
+          "item": "Supercomputer",
+          "amount_per_min": 3
+        },
+        {
+          "item": "Ficsite Trigon",
+          "amount_per_min": 45
+        },
+        {
+          "item": "Excited Photonic Matter",
+          "amount_per_min": 75
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 75
+        }
+      ]
+    },
+    {
+      "id": "singularitycell",
+      "item": "Singularity Cell",
+      "output_per_min": 10,
+      "machine": "Manufacturer",
+      "ingredients": [
+        {
+          "item": "Nuclear Pasta",
+          "amount_per_min": 1
+        },
+        {
+          "item": "Dark Matter Crystal",
+          "amount_per_min": 20
+        },
+        {
+          "item": "Iron Plate",
+          "amount_per_min": 100
+        },
+        {
+          "item": "Concrete",
+          "amount_per_min": 200
+        }
+      ]
+    },
+    {
+      "id": "spaceelevatorpart_10",
+      "item": "Biochemical Sculptor",
+      "output_per_min": 2,
+      "machine": "Blender",
+      "ingredients": [
+        {
+          "item": "Assembly Director System",
+          "amount_per_min": 0.5
+        },
+        {
+          "item": "Ficsite Trigon",
+          "amount_per_min": 40
+        },
+        {
+          "item": "Water",
+          "amount_per_min": 10
+        }
+      ]
+    },
+    {
+      "id": "spaceelevatorpart_11",
+      "item": "Ballistic Warp Drive",
+      "output_per_min": 1,
+      "machine": "Manufacturer",
+      "ingredients": [
+        {
+          "item": "Thermal Propulsion Rocket",
+          "amount_per_min": 1
+        },
+        {
+          "item": "Singularity Cell",
+          "amount_per_min": 5
+        },
+        {
+          "item": "Superposition Oscillator",
+          "amount_per_min": 2
+        },
+        {
+          "item": "Dark Matter Crystal",
+          "amount_per_min": 40
+        }
+      ]
+    },
+    {
+      "id": "spaceelevatorpart_12",
+      "item": "AI Expansion Server",
+      "output_per_min": 4,
+      "machine": "Quantum Encoder",
+      "ingredients": [
+        {
+          "item": "Magnetic Field Generator",
+          "amount_per_min": 4
+        },
+        {
+          "item": "Neural-Quantum Processor",
+          "amount_per_min": 4
+        },
+        {
+          "item": "Superposition Oscillator",
+          "amount_per_min": 4
+        },
+        {
+          "item": "Excited Photonic Matter",
+          "amount_per_min": 100
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 100
+        }
+      ]
+    },
+    {
+      "id": "ficsonium",
+      "item": "Ficsonium",
+      "output_per_min": 10,
+      "machine": "Particle Accelerator",
+      "ingredients": [
+        {
+          "item": "Plutonium Waste",
+          "amount_per_min": 10
+        },
+        {
+          "item": "Singularity Cell",
+          "amount_per_min": 10
+        },
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 200
+        }
+      ]
+    },
+    {
+      "id": "ficsoniumfuelrod",
+      "item": "Ficsonium Fuel Rod",
+      "output_per_min": 2.5,
+      "machine": "Quantum Encoder",
+      "ingredients": [
+        {
+          "item": "Ficsonium",
+          "amount_per_min": 5
+        },
+        {
+          "item": "Electromagnetic Control Rod",
+          "amount_per_min": 5
+        },
+        {
+          "item": "Ficsite Trigon",
+          "amount_per_min": 100
+        },
+        {
+          "item": "Excited Photonic Matter",
+          "amount_per_min": 50
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 50
+        }
+      ]
+    },
+    {
+      "id": "alienpowermatrix",
+      "item": "Alien Power Matrix",
+      "output_per_min": 2.5,
+      "machine": "Quantum Encoder",
+      "ingredients": [
+        {
+          "item": "SAM Fluctuator",
+          "amount_per_min": 12.5
+        },
+        {
+          "item": "Power Shard",
+          "amount_per_min": 7.5
+        },
+        {
+          "item": "Superposition Oscillator",
+          "amount_per_min": 7.5
+        },
+        {
+          "item": "Excited Photonic Matter",
+          "amount_per_min": 60
+        }
+      ],
+      "byproducts": [
+        {
+          "item": "Dark Matter Residue",
+          "amount_per_min": 60
         }
       ]
     }

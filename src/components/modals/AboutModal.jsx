@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 const ALTERNATIVE_SITES = [
   {
     name: 'Satisfactory Wiki',
-    url: 'https://satisfactory.fandom.com/',
+    url: 'https://satisfactory.wiki.gg/',
     icon: '📖',
     description: 'Oyunun resmi wiki sayfası',
   },

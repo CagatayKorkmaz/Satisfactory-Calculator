@@ -106,7 +106,7 @@ export default function SearchBar({
   const handleShowWiki = useCallback(() => {
     if (!selectedItem) return;
     const wikiName = selectedItem.item.replace(/ /g, '_').replace(/™/g, '');
-    window.open(`https://satisfactory.fandom.com/wiki/${encodeURIComponent(wikiName)}`, '_blank');
+    window.open(`https://satisfactory.wiki.gg/wiki/${encodeURIComponent(wikiName)}`, '_blank');
   }, [selectedItem]);
 
   useEffect(() => {

@@ -771,7 +771,7 @@ export default function SatisfactoryCanvas({ recipesData }) {
             onClick={() => {
               closeNodeContextMenu();
               const wikiName = nodeContextMenu.itemName.replace(/ /g, '_').replace(/™/g, '');
-              window.open(`https://satisfactory.fandom.com/wiki/${encodeURIComponent(wikiName)}`, '_blank');
+              window.open(`https://satisfactory.wiki.gg/wiki/${encodeURIComponent(wikiName)}`, '_blank');
             }}
           >
             <span className="icon">🌐</span>
